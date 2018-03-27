@@ -1,3 +1,10 @@
 # polling-system
 
-sample text
+== Installing ==
+
+* pip install virtualenv
+* virtualenv env
+* env\Scripts\activate
+* pip install flask
+
+
