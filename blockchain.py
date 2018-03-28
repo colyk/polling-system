@@ -105,6 +105,9 @@ class BlockChain():
             result.append(is_block_integrated.copy())
         return result
 
+    def get_current_blocks(self):
+        return self.blocks_frame
+
 
 if __name__ == '__main__':
     b = BlockChain()
