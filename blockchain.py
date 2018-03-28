@@ -43,7 +43,6 @@ class BlockChain():
         
 
     def init_check(self):
-        #also need to check if genesis-block exists
         if self.BLOCK_DIR not in os.listdir():
             os.mkdir(self.BLOCK_DIR)
             return 0
@@ -56,7 +55,6 @@ class BlockChain():
                 logging.error('File existed but without genesis block')
                 return 0
             
-        
     def creat_genesis_block(self):
         self.add_block()
         logging.info('Created Genesis block in %s' % self.BLOCK_FILENAME)
@@ -81,8 +79,11 @@ class BlockChain():
         self.blocks_frame['blocks_count'] = self.blocks_frame['blocks_count'] + 1
 
         with open(self.BLOCK_FILENAME, 'w') as file:
-            json.dump(self.blocks_frame, file, indent=4, ensure_ascii=False)
-            logging.info('Created block with index: ' + str(self.blocks_frame['blocks_count'] - 1))
+            try:
+                json.dump(self.blocks_frame, file, indent=4, ensure_ascii=False)
+                logging.info('Created block with index: ' + str(self.blocks_frame['blocks_count'] - 1))
+            except Exception as e:
+                logging.error('An exception occured when tried to write block %s to %s: %s'% (str(blocks_frame['blocks_count']-1), self.BLOCK_FILENAME, str(e)))
 
     def get_block_hash(self, block):
         try:
@@ -99,18 +100,18 @@ class BlockChain():
         for index in range(1, self.blocks_frame['blocks_count']):
             is_block_integrated['index'] = index - 1
             is_block_integrated['result'] = self.blocks_frame['blocks'][index]['prev_hash'] == self.get_block_hash(self.blocks_frame['blocks'][index - 1]) # Красивая строка :)
+            if is_block_integrated['result'] == False:
+                logging.warning('Integrity check failed for block %s' % is_block_integrated['index'])
             result.append(is_block_integrated.copy())
         return result
 
 
-
 if __name__ == '__main__':
     b = BlockChain()
-    # b.add_block("1", "1")
-    # b.add_block('2', "1")
-    # b.add_block('2', "22")
-    # b.add_block('3', "56")
-    # b.add_block('3', "57")
-    # print(b.check_blocks_integrity())
+    b.add_block("1", "1")
+    b.add_block('2', "1")
+    b.add_block('2', "22")
+    print(b.check_blocks_integrity())
+
    
 
