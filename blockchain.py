@@ -15,12 +15,6 @@ class BlockChain():
             os.mkdir(logdir)
 
         logging.basicConfig(filename=logdir+"/blockchain.log", level=logging.NOTSET, format='%(levelname)s:%(asctime)s:%(message)s')
-
-        #if(not poll_dirname.startswith('/')):
-            #poll_dirname = '/' + poll_dirname
-
-        #if(not poll_filename.startswith('/')):
-            #poll_filename = '/' + poll_filename
         
         if(not poll_filename.endswith('.json')):
             poll_filename += '.json'
@@ -59,8 +53,6 @@ class BlockChain():
         return 1
         
 
-# TODO: code refactoring, checking begining of path (/ must be)
-
     def creat_genesis_block(self):
         self.add_block()
         logging.info('Created Genesis block in ' + self.BLOCK_FILENAME)
@@ -85,8 +77,11 @@ class BlockChain():
         self.blocks_frame['blocks_count'] = self.blocks_frame['blocks_count'] + 1
 
         with open(self.BLOCK_FILENAME, 'w') as file:
-            json.dump(self.blocks_frame, file, indent=4, ensure_ascii=False)
-            logging.info('Created block with index: ' + str(self.blocks_frame['blocks_count'] - 1))
+            try:
+                json.dump(self.blocks_frame, file, indent=4, ensure_ascii=False)
+                logging.info('Created block with index: ' + str(self.blocks_frame['blocks_count'] - 1))
+            except Exception as e:
+                logging.error('An exception occured when tried to write block %s to %s: %s'% (str(blocks_frame['blocks_count']-1), self.BLOCK_FILENAME, str(e)))
 
     def get_block_hash(self, block):
         try:
@@ -103,9 +98,10 @@ class BlockChain():
         for index in range(1, self.blocks_frame['blocks_count']):
             is_block_integrated['index'] = index - 1
             is_block_integrated['result'] = self.blocks_frame['blocks'][index]['prev_hash'] == self.get_block_hash(self.blocks_frame['blocks'][index - 1]) # Красивая строка :)
+            if is_block_integrated['result'] == False:
+                logging.warning('Integrity check failed for block %s' % is_block_integrated['index'])
             result.append(is_block_integrated.copy())
         return result
-
 
 
 if __name__ == '__main__':
@@ -113,8 +109,6 @@ if __name__ == '__main__':
     b.add_block("1", "1")
     b.add_block('2', "1")
     b.add_block('2', "22")
-    b.add_block('3', "56")
-    b.add_block('3', "57")
     print(b.check_blocks_integrity())
    
 
