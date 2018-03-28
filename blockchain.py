@@ -5,10 +5,12 @@ import time
 import logging
 
 class BlockChain():
+
     def __init__(self):
         self.BLOCK_FILENAME = os.curdir + '/blocks/blocks.json'
         logging.basicConfig(filename="log/blockchain.log", level=logging.DEBUG,
                             format='%(asctime)s:%(levelname)s:%(message)s')
+
         self.data = {'title' : '',
             'vote_for' : '',
             'prev_hash' : '',
@@ -17,13 +19,19 @@ class BlockChain():
             'index' : ''
             }
 
-    @classmethod
-    def creat_block(cls):
-        os.mkdir(os.curdir + "/blocks")
-        return cls
+    def creat_genesis_block(self):
+        files = os.listdir(os.curdir)
+        if('blocks' not in files):
+            os.mkdir(os.curdir + "/blocks")
+            self.add_block()
 
-    def add_block(self, title, vote_for):
-        
+    def add_block(self, title='Genesis block', vote_for=''):
+        data = self.data
+        data['title'] = title
+        data['vote_for'] = vote_for
+        data['timestamp'] = time.time()
+        print(data)
+
         with open(self.BLOCK_FILENAME, 'w') as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
 
@@ -39,3 +47,4 @@ class BlockChain():
 
 if __name__ == '__main__':
     b = BlockChain()
+    b.creat_genesis_block()
