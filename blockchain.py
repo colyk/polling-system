@@ -12,7 +12,7 @@ class BlockChain():
         if(logdir not in os.listdir()):
             os.mkdir(os.curdir + '/' + logdir)
 
-        logging.basicConfig(filename=logdir+"/blockchain.log", level=0,
+        logging.basicConfig(filename=logdir+"/blockchain.log", level=logging.NOTSET,
                             format='%(levelname)s:%(asctime)s:%(message)s')
 
         if(not poll_dirname.startswith('/')):
@@ -44,25 +44,24 @@ class BlockChain():
 
         logging.info('Created object with poll_dirname: ' + poll_dirname + 
                     '; poll_filename: ' + poll_filename)
-        self.get_cur_block()
+        self.creat_genesis_block()
+        self.save_cur_block()
 
     def check_path():
         # TODO: code refactoring, checking begining of path (/ must be)
-        return 0
+        pass
 
     def creat_genesis_block(self):
-        files = os.listdir()
-        if(self.BLOCK_DIR[1:] not in files):
+        if(self.BLOCK_DIR[1:] not in os.listdir()):
             os.mkdir(os.curdir + self.BLOCK_DIR)
             self.add_block()
             logging.info('Created Genesis block in ' + self.BLOCK_FILENAME)
 
-    def get_cur_block(self):
+    def save_cur_block(self):
         if os.path.isfile(self.BLOCK_FILENAME) :
             file_dict = json.load(open(self.BLOCK_FILENAME))
             self.blocks_frame = file_dict
-        logging.info('Previous blocks is saved!')
-        
+            logging.info('Previous blocks is saved!')        
 
     def add_block(self, title='Genesis block', vote_for=''):
         block = self.block.copy()
@@ -88,13 +87,16 @@ class BlockChain():
             logging.error(e)
 
     def check_blocks_integrity(self):
-        result = {
+        is_block_integrated = {
         'index' : 0,
         'result' : 0 # 1 - OK, 0 - not okey
         }
+        result = list()
         for index in range(1, self.blocks_frame['blocks_count']):
-            blocks_frame['blocks'][index]['prev_hash']
-
+            is_block_integrated['index'] = index - 1
+            is_block_integrated['result'] = self.blocks_frame['blocks'][index]['prev_hash'] == self.get_block_hash(self.blocks_frame['blocks'][index - 1]) # Красивая строка :)
+            result.append(is_block_integrated.copy())
+        return result
 
 
 
@@ -104,6 +106,6 @@ if __name__ == '__main__':
     b.add_block("1", "1")
     b.add_block('2', "2")
     b.add_block('3', "3")
-
-    
+    print(b.check_blocks_integrity())
+   
 
