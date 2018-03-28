@@ -4,6 +4,8 @@ import os
 import time
 import logging
 
+# TODO: refactoring!
+
 class BlockChain():
 
     def __init__(self, poll_dirname='/blocks', poll_filename='/blocks.json', logdir='logs'):
@@ -86,7 +88,7 @@ class BlockChain():
         except Exception as e:
             logging.error(e)
 
-    def check_blocks_integrity(self):
+    def check_blocks_integrity(self) -> []:
         is_block_integrated = {
         'index' : 0,
         'result' : 0 # 1 - OK, 0 - not okey
