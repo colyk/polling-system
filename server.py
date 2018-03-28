@@ -14,14 +14,8 @@ class MainPage(Resource):
                 'Candidates': voteFor,
                 }
 
-class Main(Resource):
-    def put(self):
-        print(request.form.keys)
-        return {"title": ";f"}
-
-
 api.add_resource(MainPage, '/')
-api.add_resource(Main, '/t')
+
 
 
 if __name__ == '__main__':
