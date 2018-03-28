@@ -6,27 +6,32 @@ import logging
 
 class BlockChain():
 
-    def __init__(self, dir_name='/blocks', poll_name='/blocks.json'):
-        logging.basicConfig(filename="log/blockchain.log", level=0,
+    def __init__(self, poll_dirname='/blocks', poll_filename='/blocks.json', logdir='logs'):
+        # TODO: logs must insist poll title.
+
+        if(logdir not in os.listdir()):
+            os.mkdir(os.curdir + '/' + logdir)
+
+        logging.basicConfig(filename=logdir+"/blockchain.log", level=0,
                             format='%(levelname)s:%(asctime)s:%(message)s')
 
-        if(not dir_name.startswith('/')):
-            dir_name = '/' + dir_name
+        if(not poll_dirname.startswith('/')):
+            poll_dirname = '/' + poll_dirname
 
-        if(not poll_name.startswith('/')):
-            poll_name = '/' + poll_name
+        if(not poll_filename.startswith('/')):
+            poll_filename = '/' + poll_filename
         
-        if(not poll_name.endswith('.json')):
-            poll_name += '.json'
+        if(not poll_filename.endswith('.json')):
+            poll_filename += '.json'
     
-        self.BLOCK_DIR = dir_name
-        self.BLOCK_FILENAME = os.curdir + dir_name + poll_name
+        self.BLOCK_DIR = poll_dirname
+        self.BLOCK_FILENAME = os.curdir + poll_dirname + poll_filename
     
         self.block = {'title' : '',
             'vote_for' : '',
             'prev_hash' : '',
             'timestamp' : '',
-            'proof' : -1,
+            # 'proof' : -1,
             'index' : 0
             }
 
@@ -37,38 +42,55 @@ class BlockChain():
         'blocks_count' : 0
         }
 
-        logging.info('Created object with dir_name: ' + dir_name + 
-                    '; poll_name: ' + poll_name)
+        logging.info('Created object with poll_dirname: ' + poll_dirname + 
+                    '; poll_filename: ' + poll_filename)
+
+    def check_path():
+        # TODO: code refactoring, checking begining of path (/ must be)
+        return 0
 
     def creat_genesis_block(self):
-        files = os.listdir(os.curdir)
+        files = os.listdir()
         if(self.BLOCK_DIR[1:] not in files):
             os.mkdir(os.curdir + self.BLOCK_DIR)
             self.add_block()
             logging.info('Created Genesis block in ' + self.BLOCK_FILENAME)
 
+    def get_cur_block():
+        # Если выйти из программы то следующие блоки все перепишут.
+        # Нужно сохранят пред. состояние
+        pass
+
     def add_block(self, title='Genesis block', vote_for=''):
-        # TODO: put block into blocks_frame
         block = self.block
         block['title'] = title
         block['vote_for'] = vote_for
         block['timestamp'] = time.time()
+        block['index'] = self.blocks_frame['blocks_count']
+        index = self.blocks_frame['blocks_count']
+        if(index != 0):
+            block['prev_hash'] = self.get_block_hash(self.blocks_frame['blocks'][index-1])
+
+        self.blocks_frame['blocks'].append(block)
+        self.blocks_frame['blocks_count'] = self.blocks_frame['blocks_count'] + 1
+        print(self.blocks_frame)
 
         with open(self.BLOCK_FILENAME, 'w') as file:
-            json.dump(block, file, indent=4, ensure_ascii=False)
-            logging.debug('Created block with index' + block['index'])
+            json.dump(self.blocks_frame, file, indent=4, ensure_ascii=False)
+            logging.debug('Created block with index' + str(self.blocks_frame['blocks_count'] - 1))
 
-    def get_block_hash(self, index):
+    def get_block_hash(self, block):
         try:
-            with open(self.BLOCK_FILENAME, 'rb') as file:
-                return hashlib.sha256(file.read()).hexdigest()
+            return hashlib.sha256(json.dumps(block).encode()).hexdigest()
         except Exception as e:
-            logging.error('Block ' + index + ' does not exist!' + e)
+            logging.error('Block ' + ' does not exist!' + e)
 
-    def check_blocks_integrity():
+    def check_blocks_integrity(self):
         return 0
 
 if __name__ == '__main__':
     b = BlockChain()
     b.creat_genesis_block()
+    b.add_block("LOL", "KEK")
+    b.add_block('Lil', "Pump")
 

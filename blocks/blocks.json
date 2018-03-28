@@ -1,8 +1,26 @@
 {
-    "title": "Genesis block",
-    "vote_for": "",
-    "prev_hash": "",
-    "timestamp": 1522239057.0046344,
-    "proof": -1,
-    "index": ""
+    "blocks": [
+        {
+            "title": "Lil",
+            "vote_for": "Pump",
+            "prev_hash": "6ac6fef567a3e62fc25aadf21c29eedee0b1a91887c3e5fe5024406926577bd8",
+            "timestamp": 1522243416.0871725,
+            "index": 2
+        },
+        {
+            "title": "Lil",
+            "vote_for": "Pump",
+            "prev_hash": "6ac6fef567a3e62fc25aadf21c29eedee0b1a91887c3e5fe5024406926577bd8",
+            "timestamp": 1522243416.0871725,
+            "index": 2
+        },
+        {
+            "title": "Lil",
+            "vote_for": "Pump",
+            "prev_hash": "6ac6fef567a3e62fc25aadf21c29eedee0b1a91887c3e5fe5024406926577bd8",
+            "timestamp": 1522243416.0871725,
+            "index": 2
+        }
+    ],
+    "blocks_count": 3
 }
