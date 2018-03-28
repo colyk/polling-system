@@ -44,6 +44,7 @@ class BlockChain():
 
         logging.info('Created object with poll_dirname: ' + poll_dirname + 
                     '; poll_filename: ' + poll_filename)
+        self.get_cur_block()
 
     def check_path():
         # TODO: code refactoring, checking begining of path (/ must be)
@@ -56,13 +57,15 @@ class BlockChain():
             self.add_block()
             logging.info('Created Genesis block in ' + self.BLOCK_FILENAME)
 
-    def get_cur_block():
-        # Если выйти из программы то следующие блоки все перепишут.
-        # Нужно сохранят пред. состояние
-        pass
+    def get_cur_block(self):
+        if os.path.isfile(self.BLOCK_FILENAME) :
+            file_dict = json.load(open(self.BLOCK_FILENAME))
+            self.blocks_frame = file_dict
+        logging.info('Previous blocks is saved!')
+        
 
     def add_block(self, title='Genesis block', vote_for=''):
-        block = self.block
+        block = self.block.copy()
         block['title'] = title
         block['vote_for'] = vote_for
         block['timestamp'] = time.time()
@@ -73,24 +76,34 @@ class BlockChain():
 
         self.blocks_frame['blocks'].append(block)
         self.blocks_frame['blocks_count'] = self.blocks_frame['blocks_count'] + 1
-        print(self.blocks_frame)
 
         with open(self.BLOCK_FILENAME, 'w') as file:
             json.dump(self.blocks_frame, file, indent=4, ensure_ascii=False)
-            logging.debug('Created block with index' + str(self.blocks_frame['blocks_count'] - 1))
+            logging.info('Created block with index: ' + str(self.blocks_frame['blocks_count'] - 1))
 
     def get_block_hash(self, block):
         try:
             return hashlib.sha256(json.dumps(block).encode()).hexdigest()
         except Exception as e:
-            logging.error('Block ' + ' does not exist!' + e)
+            logging.error(e)
 
     def check_blocks_integrity(self):
-        return 0
+        result = {
+        'index' : 0,
+        'result' : 0 # 1 - OK, 0 - not okey
+        }
+        for index in range(1, self.blocks_frame['blocks_count']):
+            blocks_frame['blocks'][index]['prev_hash']
+
+
+
 
 if __name__ == '__main__':
     b = BlockChain()
     b.creat_genesis_block()
-    b.add_block("LOL", "KEK")
-    b.add_block('Lil', "Pump")
+    b.add_block("1", "1")
+    b.add_block('2', "2")
+    b.add_block('3', "3")
+
+    
 
