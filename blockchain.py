@@ -82,24 +82,25 @@ class BlockChain():
             try:
                 json.dump(self.blocks_frame, file, indent=4, ensure_ascii=False)
                 logging.info('Created block with index: ' + str(self.blocks_frame['blocks_count'] - 1))
-            except Exception as e:
-                logging.error('An exception occured when tried to write block %s to %s: %s'% (str(blocks_frame['blocks_count']-1), self.BLOCK_FILENAME, str(e)))
+            except Exception:
+                logging.exception('An exception occured when tried to write block %s to %s' % 
+                				(str(blocks_frame['blocks_count'] - 1), self.BLOCK_FILENAME))
 
     def get_block_hash(self, block):
         try:
             return hashlib.sha256(json.dumps(block).encode()).hexdigest()
         except Exception as e:
-            logging.error(e)
+            logging.exception('An exception occured when tried to get hash %s block' % str(block['index']))
 
     def check_blocks_integrity(self) -> []:
+        result = list()
         is_block_integrated = {
             'index' : 0,
-            'result' : 0 # 1 - OK, 0 - not okay
+            'result' : 0
         }
-        result = list()
         for index in range(1, self.blocks_frame['blocks_count']):
             is_block_integrated['index'] = index - 1
-            is_block_integrated['result'] = self.blocks_frame['blocks'][index]['prev_hash'] == self.get_block_hash(self.blocks_frame['blocks'][index - 1]) # Красивая строка :)
+            is_block_integrated['result'] = self.blocks_frame['blocks'][index]['prev_hash'] == self.get_block_hash(self.blocks_frame['blocks'][index - 1])
             if is_block_integrated['result'] == False:
                 logging.warning('Integrity check failed for block %s' % is_block_integrated['index'])
             result.append(is_block_integrated.copy())
