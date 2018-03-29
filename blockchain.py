@@ -105,7 +105,9 @@ class BlockChain():
                 logging.warning('Integrity check failed for block %s' % is_block_integrated['index'])
             result.append(is_block_integrated.copy())
         return result
-    
+
+    def get_current_blocks(self):
+        return self.blocks_frame
 
 if __name__ == '__main__':
     b = BlockChain()
