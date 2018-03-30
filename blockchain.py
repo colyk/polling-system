@@ -4,7 +4,8 @@ import os
 import time
 import logging
 
-
+# Название с маленкой
+# Подумать о классе блок которіе наследуеться блокчейном
 class BlockChain():
 
     def __init__(self, poll_dirname='blocks', poll_filename='blocks.json', logdir='logs'):
@@ -22,13 +23,14 @@ class BlockChain():
         self.BLOCK_FILENAME = '%s/%s/%s' % (os.curdir, poll_dirname, poll_filename)
     
         # TODO: add proof of work
+        # Поле тайтл только у генезис блока. Нужен ли пруф работі? Что он дает??
         self.block = {'title' : '',
             'vote_for' : '',
             'prev_hash' : '',
             'timestamp' : '',
             'index' : 0
             }
-
+ # Время начального и последнего блока! Для проверки целостности.
         self.blocks_frame = {
             'blocks' : [],
             'blocks_count' : 0
@@ -36,7 +38,7 @@ class BlockChain():
 
         if not self.init_check():
             self.creat_genesis_block()
-        
+        #  В любом случае грузиться пред блок???
         self.load_prev_block()
 
         logging.info('Created object with poll_dirname: ' + poll_dirname +'; poll_filename: ' + poll_filename)
@@ -58,7 +60,7 @@ class BlockChain():
     def creat_genesis_block(self):
         self.add_block()
         logging.info('Created Genesis block in %s' % self.BLOCK_FILENAME)
-
+# прев_блокС
     def load_prev_block(self):
         if os.path.isfile(self.BLOCK_FILENAME) :
             file_dict = json.load(open(self.BLOCK_FILENAME))
@@ -85,7 +87,7 @@ class BlockChain():
             except Exception:
                 logging.exception('An exception occured when tried to write block %s to %s' % 
                 				(str(blocks_frame['blocks_count'] - 1), self.BLOCK_FILENAME))
-
+#  Подумать о закрітии блоков ешем файла
     def get_block_hash(self, block):
         try:
             return hashlib.sha256(json.dumps(block).encode()).hexdigest()
