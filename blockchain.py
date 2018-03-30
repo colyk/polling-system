@@ -12,27 +12,29 @@ class BlockChain():
         if(logdir not in os.listdir()):
             os.mkdir(logdir)
 
-        logging.basicConfig(filename=logdir+"/blockchain.log", level=logging.NOTSET,
+        logging.basicConfig(filename=logdir + "/blockchain.log", level=logging.NOTSET,
                             format='%(levelname)s:%(asctime)s:%(message)s')
-        
+
         if(not poll_filename.endswith('.json')):
             poll_filename += '.json'
-    
+
         self.BLOCK_DIR = poll_dirname
-        self.BLOCK_FILENAME = '%s/%s/%s' % (os.curdir, poll_dirname, poll_filename)
-    
+        self.BLOCK_FILENAME = '%s/%s/%s' % (os.curdir,
+                                            poll_dirname, poll_filename)
+
         # TODO: add proof of work
         # Поле тайтл только у генезис блока.
-        self.block = {'title' : '',
-            'vote_for' : '',
-            'previous_hash' : '',
-            'timestamp' : '',
-            'index' : 0
-            }
+        # Добавить id голосующего
+        self.block = {'title': '',
+                      'vote_for': '',
+                      'previous_hash': '',
+                      'timestamp': '',
+                      'index': 0
+                      }
 
         self.blocks_frame = {
-            'blocks' : [],
-            'blocks_count' : 0
+            'blocks': [],
+            'blocks_count': 0
         }
 
         if not self.init_check():
@@ -40,8 +42,8 @@ class BlockChain():
         else:
             self.load_prev_blocks()
 
-        logging.info('Created object with poll_dirname: ' + poll_dirname +'; poll_filename: ' + poll_filename)
-        
+        logging.info('Created object with poll_dirname: ' +
+                     poll_dirname + '; poll_filename: ' + poll_filename)
 
     def init_check(self):
         if self.BLOCK_DIR not in os.listdir():
@@ -55,7 +57,7 @@ class BlockChain():
             except Exception:
                 logging.error('File existed but without genesis block')
                 return 0
-            
+
     def create_genesis_block(self):
         self.add_block()
         logging.info('Created Genesis block in %s' % self.BLOCK_FILENAME)
@@ -63,7 +65,7 @@ class BlockChain():
     def load_prev_blocks(self):
         file_dict = json.load(open(self.BLOCK_FILENAME))
         self.blocks_frame = file_dict
-        logging.info('Loaded blocks from %s' % self.BLOCK_FILENAME)   
+        logging.info('Loaded blocks from %s' % self.BLOCK_FILENAME)
 
     def add_block(self, title='Genesis block', vote_for=''):
         block = self.block.copy()
@@ -73,46 +75,73 @@ class BlockChain():
         block['index'] = self.blocks_frame['blocks_count']
         index = self.blocks_frame['blocks_count']
         if(index != 0):
-            block['prev_hash'] = self.get_block_hash(self.blocks_frame['blocks'][index-1])
+            block['prev_hash'] = self.get_block_hash(
+                self.blocks_frame['blocks'][index - 1])
 
         self.blocks_frame['blocks'].append(block)
-        self.blocks_frame['blocks_count'] = self.blocks_frame['blocks_count'] + 1
+        self.blocks_frame['blocks_count'] = self.blocks_frame[
+            'blocks_count'] + 1
 
         with open(self.BLOCK_FILENAME, 'w') as file:
             try:
-                json.dump(self.blocks_frame, file, indent=4, ensure_ascii=False)
-                logging.info('Created block with index: ' + str(self.blocks_frame['blocks_count'] - 1))
+                json.dump(self.blocks_frame, file,
+                          indent=4, ensure_ascii=False)
+                logging.info('Created block with index: ' +
+                             str(self.blocks_frame['blocks_count'] - 1))
             except Exception:
-                logging.exception('An exception occured when tried to write block %s to %s' % 
-                				(str(blocks_frame['blocks_count'] - 1), self.BLOCK_FILENAME))
-#  Подумать о закрытии блоков кешем файла
+                logging.exception('An exception occured when tried to write block %s to %s' %
+                                  (str(blocks_frame['blocks_count'] - 1), self.BLOCK_FILENAME))
+    
+    # Подумать о закрытии блоков кешем файла
     def get_block_hash(self, block):
         try:
             return hashlib.sha256(json.dumps(block).encode()).hexdigest()
         except Exception as e:
-            logging.exception('An exception occured when tried to get hash %s block' % str(block['index']))
+            logging.exception(
+                'An exception occured when tried to get hash %s block' % str(block['index']))
 
     def check_blocks_integrity(self) -> []:
         result = list()
         is_block_integrated = {
-            'index' : 0,
-            'result' : 0
+            'index': 0,
+            'result': 0
         }
         for index in range(1, self.blocks_frame['blocks_count']):
             is_block_integrated['index'] = index - 1
-            is_block_integrated['result'] = self.blocks_frame['blocks'][index]['prev_hash'] == self.get_block_hash(self.blocks_frame['blocks'][index - 1])
+            is_block_integrated['result'] = self.blocks_frame['blocks'][index][
+                'prev_hash'] == self.get_block_hash(self.blocks_frame['blocks'][index - 1])
+
             if is_block_integrated['result'] == False:
-                logging.warning('Integrity check failed for block %s' % is_block_integrated['index'])
+                logging.warning('Integrity check failed for block %s' %
+                                is_block_integrated['index'])
             result.append(is_block_integrated.copy())
         return result
-    
+
     def get_current_blocks(self):
         return self.blocks_frame
 
 
-    # class PollingSystem(BlockChain):
-    #     def __init__(self):
-    #         pass
+class PollingSystem(BlockChain):
+
+    def __init__(self):
+        super().__init__(self)
+
+    @classmethod
+    def add_poll(cls, title, vote_for=['Barak', 'Bush']):
+        pass
+
+    # hashmap with % ({'Barak':23.2, "Bush":76.8})
+    def get_poll_result(self):
+        pass
+
+    # Удаление блока голосования (Файла), после получения результата
+    def __del__(self):
+        pass
+
+    # Вывод информации о голосании: Кандидаты, кол. гол.
+    def __str__(self):
+        pass
+
 
 
 if __name__ == '__main__':
@@ -121,7 +150,3 @@ if __name__ == '__main__':
     b.add_block('2', "1")
     b.add_block('2', "22")
     print(b.check_blocks_integrity())
-
-
-   
-
