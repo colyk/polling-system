@@ -4,8 +4,7 @@ import os
 import time
 import logging
 
-# Название с маленкой
-# Подумать о классе блок которіе наследуеться блокчейном
+
 class BlockChain():
 
     def __init__(self, poll_dirname='blocks', poll_filename='blocks.json', logdir='logs'):
@@ -23,23 +22,23 @@ class BlockChain():
         self.BLOCK_FILENAME = '%s/%s/%s' % (os.curdir, poll_dirname, poll_filename)
     
         # TODO: add proof of work
-        # Поле тайтл только у генезис блока. Нужен ли пруф работі? Что он дает??
+        # Поле тайтл только у генезис блока.
         self.block = {'title' : '',
             'vote_for' : '',
-            'prev_hash' : '',
+            'previous_hash' : '',
             'timestamp' : '',
             'index' : 0
             }
- # Время начального и последнего блока! Для проверки целостности.
+
         self.blocks_frame = {
             'blocks' : [],
             'blocks_count' : 0
         }
 
         if not self.init_check():
-            self.creat_genesis_block()
-        #  В любом случае грузиться пред блок???
-        self.load_prev_block()
+            self.create_genesis_block()
+        else:
+            self.load_prev_blocks()
 
         logging.info('Created object with poll_dirname: ' + poll_dirname +'; poll_filename: ' + poll_filename)
         
@@ -57,15 +56,14 @@ class BlockChain():
                 logging.error('File existed but without genesis block')
                 return 0
             
-    def creat_genesis_block(self):
+    def create_genesis_block(self):
         self.add_block()
         logging.info('Created Genesis block in %s' % self.BLOCK_FILENAME)
-# прев_блокС
-    def load_prev_block(self):
-        if os.path.isfile(self.BLOCK_FILENAME) :
-            file_dict = json.load(open(self.BLOCK_FILENAME))
-            self.blocks_frame = file_dict
-            logging.info('Loaded blocks from %s' % self.BLOCK_FILENAME)   
+
+    def load_prev_blocks(self):
+        file_dict = json.load(open(self.BLOCK_FILENAME))
+        self.blocks_frame = file_dict
+        logging.info('Loaded blocks from %s' % self.BLOCK_FILENAME)   
 
     def add_block(self, title='Genesis block', vote_for=''):
         block = self.block.copy()
@@ -87,7 +85,7 @@ class BlockChain():
             except Exception:
                 logging.exception('An exception occured when tried to write block %s to %s' % 
                 				(str(blocks_frame['blocks_count'] - 1), self.BLOCK_FILENAME))
-#  Подумать о закрітии блоков ешем файла
+#  Подумать о закрытии блоков кешем файла
     def get_block_hash(self, block):
         try:
             return hashlib.sha256(json.dumps(block).encode()).hexdigest()
@@ -107,6 +105,14 @@ class BlockChain():
                 logging.warning('Integrity check failed for block %s' % is_block_integrated['index'])
             result.append(is_block_integrated.copy())
         return result
+    
+    def get_current_blocks(self):
+        return self.blocks_frame
+
+
+    # class PollingSystem(BlockChain):
+    #     def __init__(self):
+    #         pass
 
 
 if __name__ == '__main__':
@@ -115,6 +121,7 @@ if __name__ == '__main__':
     b.add_block('2', "1")
     b.add_block('2', "22")
     print(b.check_blocks_integrity())
+
 
    
 
