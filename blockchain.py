@@ -96,7 +96,7 @@ class BlockChain():
     def get_block_hash(self, block):
         try:
             return hashlib.sha256(json.dumps(block).encode()).hexdigest()
-        except Exception as e:
+        except Exception:
             logging.exception(
                 'An exception occured when tried to get hash %s block' % str(block['index']))
 
@@ -119,29 +119,6 @@ class BlockChain():
 
     def get_current_blocks(self):
         return self.blocks_frame
-
-
-class PollingSystem(BlockChain):
-
-    def __init__(self):
-        super().__init__(self)
-
-    @classmethod
-    def add_poll(cls, title, vote_for=['Barak', 'Bush']):
-        pass
-
-    # hashmap with % ({'Barak':23.2, "Bush":76.8})
-    def get_poll_result(self):
-        pass
-
-    # Удаление блока голосования (Файла), после получения результата
-    def __del__(self):
-        pass
-
-    # Вывод информации о голосании: Кандидаты, кол. гол.
-    def __str__(self):
-        pass
-
 
 
 if __name__ == '__main__':
