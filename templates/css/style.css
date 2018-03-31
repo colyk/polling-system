@@ -26,3 +26,28 @@ body {
 .badge {
 	background-color: #414141;
 }
+.list-group-item {
+	background-color: #e8e8e7;
+	color: #2e3436;
+}
+
+.list-group-item>.badge {
+  color: #f0f0f0;
+}
+
+.modal-dialog {
+	padding: 10px;
+	background-color: #414141;
+}
+
+.form-control {
+	background-color: #e8e8e7;
+}
+
+.modal-body {
+	background-color: #414141;
+}
+
+.modal-footer {
+	background-color: #414141;
+}

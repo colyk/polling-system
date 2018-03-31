@@ -20,8 +20,8 @@ def checkInt():
 def addBlock():
     title = str(request.data.get('title'))
     vote = str(request.data.get('vote'))
-    #print(title)
-    #print(vote)
+    print(title)
+    print(vote)
     bc.add_block(title=title, vote_for=vote)
     return {'message': 'added block with title "%s" and vote "%s"' % (title, vote)}, 200, {'Access-Control-Allow-Origin': '*'}
 
