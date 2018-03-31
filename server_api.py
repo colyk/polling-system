@@ -1,9 +1,9 @@
 from flask import request
 from flask import Flask, url_for
-app = Flask(__name__)
 import blockchain
 #curl -H "Content-Type: application/json" -X POST -d '{"title": "test", "vote": "test666"}' http://127.0.0.1:5000/addBlock
 
+app = Flask(__name__)
 
 bc = blockchain.BlockChain()
 
@@ -11,7 +11,7 @@ bc = blockchain.BlockChain()
 def getBlocks():
     #resp = flask.make_response(bc.get_current_blocks(), 200)
     #resp.headers.extend({'Access-Control-Allow-Origin': '*'})
-    return bc.get_current_blocks()
+    return bc.get_current_blocks(), status.HTTP_200_OK, {'Access-Control-Allow-Origin': '*'}
 
 
 @app.route("/check", methods=['GET'])
@@ -29,4 +29,5 @@ def addBlock():
     return {'message': 'added block with title "%s" and vote "%s"' % (title, vote)}, status.HTTP_201_CREATED, {'Access-Control-Allow-Origin': '*'}
 
 
-app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=False)
