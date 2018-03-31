@@ -26,7 +26,7 @@ def addBlock():
     print(title)
     print(vote)
     bc.add_block(title=title, vote_for=vote)
-    return {'message': 'added block with title "%s" and vote "%s"' % (title, vote)}, status.HTTP_201_CREATED, {'Access-Control-Allow-Origin': '*'}
+    return {'vote': vote, 'title': title}, status.HTTP_201_CREATED, {'Access-Control-Allow-Origin': '*'}
 
 
 if __name__ == '__main__':

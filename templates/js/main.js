@@ -1,24 +1,23 @@
 'use strict'
 const base_url = 'http://127.0.0.1:5000/'
 
-function getJSONforRequest(request) {
-    let resp = $.getJSON(base_url + request, (data) => { return data });
-    return resp;
-}
-
-function postJSON(request, data) {
-    let resp = $.post(base_url + request, data);
-    return resp.responseJSON;
-}
-
 function initUI() {
     $('#get-btn').click(handleGetBtn);
     $('#chk-btn').click(handleCheckBtn);
-    $('#crt-btn').click(handleCreateBtn);
+    $('#create-block-btn').click(handleCreateBtn);
 }
 
-function blockElement(data) {
-    alert('0');
+function blockItem(index, blockdata) {
+    let title = $('<span/>').text('Title: '+blockdata['title'])
+                            .addClass('label label-primary'),
+        vote = $('<span/>').text('Vote-for: '+blockdata['vote_for'])
+                           .addClass('label label-primary'),
+        li = $('<li/>').addClass('list-group-item')
+                       .attr('id', 'block-'+index)
+                       .append(title)
+                       .append(vote)
+                       .append($('<span/>').text(index).addClass('badge float-right'));
+    return li
 }
 
 function handleGetBtn() {
@@ -26,7 +25,17 @@ function handleGetBtn() {
 }
 
 function handleCreateBtn() {
-    alert('not available');
+    let title = $('#input-title').val(),
+        vote = $('#input-vote').val();
+    if (title && vote) {
+        $.post(base_url+'addBlock', {'title': title, 'vote': vote}, (data) => {
+                        $('#input-title').val('');
+                        $('#input-vote').val('');
+                        handleGetBtn();
+                        console.log('response: '+data)
+                    });
+    }
+
 }
 
 function handleCheckBtn() {
@@ -36,7 +45,12 @@ function handleCheckBtn() {
 function processGet(data) {
     console.log(data);
     $('#blocks-count').text(data.blocks_count)
-    $('#blocks-panel').text();
+    let ptext = ''
+    for (let b in data.blocks) {
+        if (!$('#block-'+b).text()) {
+            $('ul.list-group').append(blockItem(b, data.blocks[b]));
+        }
+    }
 }
 
 initUI();

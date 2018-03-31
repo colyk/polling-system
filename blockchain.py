@@ -4,10 +4,12 @@ import os
 import time
 import logging
 
+POLL_DIRNAME = 'polls'
+
 
 class BlockChain():
 
-    def __init__(self, poll_dirname='blocks', poll_filename='blocks.json', logdir='logs'):
+    def __init__(self, poll_filename='blocks.json', logdir='logs'):
         # TODO: logs must insist poll title.
         if(logdir not in os.listdir()):
             os.mkdir(logdir)
@@ -18,13 +20,13 @@ class BlockChain():
         if(not poll_filename.endswith('.json')):
             poll_filename += '.json'
 
-        self.BLOCK_DIR = poll_dirname
+        self.BLOCK_DIR = POLL_DIRNAME
         self.BLOCK_FILENAME = '%s/%s/%s' % (os.curdir,
-                                            poll_dirname, poll_filename)
+                                            POLL_DIRNAME, poll_filename)
 
-        # TODO: add proof of work
         # Поле тайтл только у генезис блока.
-        # Добавить id голосующего
+        # Варианты голосования в генезиз блоке. Другой вариант блока для генезиз блока.
+        # Добавить id голосующего (Fingerprint) https://github.com/Valve/fingerprintjs
         self.block = {'title': '',
                       'vote_for': '',
                       'previous_hash': '',
@@ -37,13 +39,15 @@ class BlockChain():
             'blocks_count': 0
         }
 
+        # TODO: переделать, так как этот код исполняется при наследовании в
+        # PollSystem
         if not self.init_check():
             self.create_genesis_block()
         else:
             self.load_prev_blocks()
 
-        logging.info('Created object with poll_dirname: ' +
-                     poll_dirname + '; poll_filename: ' + poll_filename)
+        logging.info('Created BlockChain object in %s with poll_name %s' %
+                     (POLL_DIRNAME, poll_filename))
 
     def init_check(self):
         if self.BLOCK_DIR not in os.listdir():
@@ -66,7 +70,8 @@ class BlockChain():
         file_dict = json.load(open(self.BLOCK_FILENAME))
         self.blocks_frame = file_dict
         logging.info('Loaded blocks from %s' % self.BLOCK_FILENAME)
-
+    
+    # Генезиз блок может иметь тайтл вида: Gen block. TITLE. Тогда можно исп. split('.')
     def add_block(self, title='Genesis block', vote_for=''):
         block = self.block.copy()
         block['title'] = title
@@ -91,7 +96,7 @@ class BlockChain():
             except Exception:
                 logging.exception('An exception occured when tried to write block %s to %s' %
                                   (str(blocks_frame['blocks_count'] - 1), self.BLOCK_FILENAME))
-    
+
     # Подумать о закрытии блоков кешем файла
     def get_block_hash(self, block):
         try:
@@ -111,14 +116,24 @@ class BlockChain():
             is_block_integrated['result'] = self.blocks_frame['blocks'][index][
                 'prev_hash'] == self.get_block_hash(self.blocks_frame['blocks'][index - 1])
 
-            if is_block_integrated['result'] == False:
+            if not is_block_integrated['result']:
                 logging.warning('Integrity check failed for block %s' %
                                 is_block_integrated['index'])
             result.append(is_block_integrated.copy())
+        if not result:
+        	logging.warning("There are not blocks to check poll_name: %s" % self.poll_name)
         return result
 
     def get_current_blocks(self):
         return self.blocks_frame
+
+    @property
+    def blocks_count(self):
+    	return self.blocks_frame['blocks_count']
+
+    @property
+    def blocks_filename(self):
+    	return self.BLOCK_FILENAME
 
 
 if __name__ == '__main__':
@@ -127,3 +142,5 @@ if __name__ == '__main__':
     b.add_block('2', "1")
     b.add_block('2', "22")
     print(b.check_blocks_integrity())
+    print(b.blocks_filename)
+
