@@ -23,6 +23,6 @@ def addBlock():
     print(title)
     print(vote)
     bc.add_block(title=title, vote_for=vote)
-    return {'message': 'added block with title "%s" and vote "%s"' % (title, vote)}, 200, {'Access-Control-Allow-Origin': '*'}
+    return {'vote': vote, 'title': title}, 200, {'Access-Control-Allow-Origin': '*'}
 
 app.run(debug=False)

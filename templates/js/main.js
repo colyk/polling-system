@@ -8,10 +8,14 @@ function initUI() {
 }
 
 function blockItem(index, blockdata) {
-    let text = $('<span/>').text('Vote-Title: '+blockdata['title']+'; Vote-for: '+blockdata['vote_for']);
-    let li = $('<li/>').addClass('list-group-item')
+    let title = $('<span/>').text('Title: '+blockdata['title'])
+                            .addClass('label label-primary'),
+        vote = $('<span/>').text('Vote-for: '+blockdata['vote_for'])
+                           .addClass('label label-primary'),
+        li = $('<li/>').addClass('list-group-item')
                        .attr('id', 'block-'+index)
-                       .append(text)
+                       .append(title)
+                       .append(vote)
                        .append($('<span/>').text(index).addClass('badge float-right'));
     return li
 }
@@ -28,6 +32,7 @@ function handleCreateBtn() {
                         $('#input-title').val('');
                         $('#input-vote').val('');
                         handleGetBtn();
+                        console.log('response: '+data)
                     });
     }
 

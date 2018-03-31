@@ -51,3 +51,11 @@ body {
 .modal-footer {
 	background-color: #414141;
 }
+
+.label-primary {
+	background-color: #5c5c5c;
+    color: #f0f0f0;
+    border-radius: 3px;
+    padding: 2px 4px;
+    margin-right: 4px;
+}
