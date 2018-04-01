@@ -3,27 +3,31 @@ import zipfile  # dafault installed in python v 3.5+
 import os
 
 ARCHIVE_PATH = os.curdir + '/old_polls.zip'  # Saving old (deleted) polls
+LOG_PATH = 'logs/blockchain.log'
 
+logger = logging.getLogger(__name__)
+
+logging.basicConfig(filename=LOG_PATH, level=logging.NOTSET,
+                    format='%(name)s:%(levelname)s:%(asctime)s:%(message)s')
 
 class PollingSystem(BlockChain):
     """ 
         poll_dirname - стандартный, в 1 папке хранятся все голосования.
         poll_name - Название голосования. Каждое голосование имеет свой файл.
     """
-# Рaзделить логирование по __name__
     
     def __init__(self, poll_name='blocks', logdir='logs'):
         super().__init__(poll_name, logdir)
         self.poll_name = poll_name.split('.')[0]
+        self.load_poll()
 
     # Создание файла
-    def add_poll(self):
+    def add_poll(self, options):
         super().create_genesis_block()
+        super().create_block(self, options)
 
-    # Тут как раз и видно что тайтл НЕ только в генезиз блоке
     def vote(self, title, vote_for):
         super().add_block(title, vote_for)
-
 
     def load_poll(self):
         if not super().init_check():
@@ -47,7 +51,6 @@ class PollingSystem(BlockChain):
 
     # Вывод информации о голосании: Кандидаты, кол. гол.
     def __str__(self):
-        print(dir(super()))
         return 'Amount of voters: %s; Title: %s; ' % (super().blocks_count, poll_name.split('.')[0])
 
 
