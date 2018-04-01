@@ -11,8 +11,8 @@ class PollingSystem(BlockChain):
         poll_name - Название голосования. Каждое голосование имеет свой файл.
     """
 # Рaзделить логирование по __name__
-
-    def __init__(self, poll_name='blocks.json', logdir='logs'):
+    
+    def __init__(self, poll_name='blocks', logdir='logs'):
         super().__init__(poll_name, logdir)
         self.poll_name = poll_name.split('.')[0]
 
@@ -20,26 +20,19 @@ class PollingSystem(BlockChain):
     def add_poll(self):
         super().create_genesis_block()
 
-    # Добавление блока
-    # Тут как раз и видно что тайтл только в генезиз блоке
+    # Тут как раз и видно что тайтл НЕ только в генезиз блоке
     def vote(self, title, vote_for):
         super().add_block(title, vote_for)
 
-    def check_vote(self, vote_for):
-        # Есть воут_фор в кандидатах
-        pass
-
 
     def load_poll(self):
-        pass
-
-        """
-        Этот код перенести с блокчейна сюда.
         if not super().init_check():
-            super().create_genesis_block()
+            self.create_genesis_block()
         else:
-            super().load_prev_blocks()
-        """
+            self.load_prev_blocks()
+
+        logging.info('Created BlockChain object in %s with poll_name %s' %
+                     (POLL_DIRNAME, poll_filename))
 
     # hashmap with % ({'Barak':23.2, "Bush":76.8})
     def get_poll_result(self):

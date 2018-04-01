@@ -8,46 +8,32 @@ POLL_DIRNAME = 'polls'
 
 
 class BlockChain():
-
-    def __init__(self, poll_filename='blocks.json', logdir='logs'):
+    def __init__(self, poll_name='blocks', logdir='logs'):
         # TODO: logs must insist poll title.
+        #Possibly use poll_name as a title
         if(logdir not in os.listdir()):
             os.mkdir(logdir)
 
         logging.basicConfig(filename=logdir + "/blockchain.log", level=logging.NOTSET,
                             format='%(levelname)s:%(asctime)s:%(message)s')
 
-        if(not poll_filename.endswith('.json')):
-            poll_filename += '.json'
-
         self.BLOCK_DIR = POLL_DIRNAME
         self.BLOCK_FILENAME = '%s/%s/%s' % (os.curdir,
-                                            POLL_DIRNAME, poll_filename)
+                                            POLL_DIRNAME, (lambda name: name if name.endswith('.json') else name+'.json')(poll_name))
 
-        # Поле тайтл только у генезис блока.
-        # Варианты голосования в генезиз блоке. Другой вариант блока для генезиз блока.
         # Добавить id голосующего (Fingerprint) https://github.com/Valve/fingerprintjs
         self.block = {'title': '',
-                      'vote_for': '',
-                      'previous_hash': '',
+                      'vote_state': {},
+                      'prev_hash': '',
                       'timestamp': '',
                       'index': 0
-                      }
+                    }
 
         self.blocks_frame = {
             'blocks': [],
             'blocks_count': 0
         }
-
-        # TODO: переделать, так как этот код исполняется при наследовании в
-        # PollSystem
-        if not self.init_check():
-            self.create_genesis_block()
-        else:
-            self.load_prev_blocks()
-
-        logging.info('Created BlockChain object in %s with poll_name %s' %
-                     (POLL_DIRNAME, poll_filename))
+        
 
     def init_check(self):
         if self.BLOCK_DIR not in os.listdir():
@@ -57,35 +43,51 @@ class BlockChain():
             return 0
         else:
             try:
-                return json.load(open(self.BLOCK_FILENAME))['blocks'][0]['title'] == 'Genesis block'
+                return json.load(open(self.BLOCK_FILENAME))['blocks'][0]['title'][:2] == 'G_'
             except Exception:
-                logging.error('File existed but without genesis block')
+                logging.error('File existed but no genesis block found')
                 return 0
 
-    def create_genesis_block(self):
-        self.add_block()
-        logging.info('Created Genesis block in %s' % self.BLOCK_FILENAME)
 
     def load_prev_blocks(self):
         file_dict = json.load(open(self.BLOCK_FILENAME))
         self.blocks_frame = file_dict
         logging.info('Loaded blocks from %s' % self.BLOCK_FILENAME)
     
-    # Генезиз блок может иметь тайтл вида: Gen block. TITLE. Тогда можно исп. split('.')
-    def add_block(self, title='Genesis block', vote_for=''):
+    
+    def create_block(self, init=False, title='NO_TITLE', vote_for=''):
+        #init could be False or list of vote options
         block = self.block.copy()
-        block['title'] = title
-        block['vote_for'] = vote_for
+        if (init):
+            #Genesis block starts with 'G_'
+            atitle = 'G_' + title
+            #if init then create dictionary with vote options and zero vote counts
+            opts = [(opt, 0) for opt in init]
+            block['vote_state'].update(opts)
+        else:
+            lastblock = self.blocks_frame['blocks'][-1]
+            #title = last title if last block's title starts not with "G_"
+            atitle = (lambda s: lastblock['title'][2:] if s else lastblock['title'])(lastblock['title'][:2] == 'G_')
+            #last vote state
+            block['vote_state'] = lastblock['vote_state'].copy()
+            #try to increase vote count by 1, if such option exists
+            if vote_for in block['vote_state']:
+                block['vote_state'][vote_for] += 1
+        #common stuff
+        block['title'] = atitle
         block['timestamp'] = time.time()
-        block['index'] = self.blocks_frame['blocks_count']
+        
+        return block
+
+    def add_block(self, block):
+        #actually add and write block
         index = self.blocks_frame['blocks_count']
+        block['index'] = index
         if(index != 0):
             block['prev_hash'] = self.get_block_hash(
                 self.blocks_frame['blocks'][index - 1])
-
         self.blocks_frame['blocks'].append(block)
-        self.blocks_frame['blocks_count'] = self.blocks_frame[
-            'blocks_count'] + 1
+        self.blocks_frame['blocks_count'] += 1
 
         with open(self.BLOCK_FILENAME, 'w') as file:
             try:
@@ -93,6 +95,7 @@ class BlockChain():
                           indent=4, ensure_ascii=False)
                 logging.info('Created block with index: ' +
                              str(self.blocks_frame['blocks_count'] - 1))
+                return b
             except Exception:
                 logging.exception('An exception occured when tried to write block %s to %s' %
                                   (str(blocks_frame['blocks_count'] - 1), self.BLOCK_FILENAME))
@@ -121,7 +124,7 @@ class BlockChain():
                                 is_block_integrated['index'])
             result.append(is_block_integrated.copy())
         if not result:
-        	logging.warning("There are not blocks to check poll_name: %s" % self.poll_name)
+        	logging.warning("There are no blocks to check poll_name: %s" % self.poll_name)
         return result
 
     def get_current_blocks(self):
@@ -137,10 +140,38 @@ class BlockChain():
 
 
 if __name__ == '__main__':
-    b = BlockChain()
-    b.add_block("1", "1")
-    b.add_block('2', "1")
-    b.add_block('2', "22")
+    '''
+    just an example
+    The idea is to use PollingSystem as wrapper for this with stuff like 
+
+    def create_poll(title, options): 
+        if not init_check():
+            create_block(init=options, title=title)
+        ...
+    (because create_block with 'init' list creates genesis block)
+
+    and something like
+
+    def vote_for(option):
+        new_block = BlockChain.create_block(vote_for=option)
+        BlockChain.add_block(new_block)
+        ...
+    
+    Also something like general json file and polls_frame that keeps all opened poll titles
+
+    Then, implement this in api
+    possibly with user id checks
+    '''
+    import random
+
+    b = BlockChain(poll_name='Test_poll')
+    new_init = b.create_block(init=['trumpet', 'violin', 'trombone'], title='Test')
+    b.add_block(new_init)
+
+    for i in range(10):
+        new = b.create_block(vote_for=random.choice(['trumpet', 'violin', 'trombone', 'nothing']))
+        b.add_block(new)
+
     print(b.check_blocks_integrity())
     print(b.blocks_filename)
 
