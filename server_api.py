@@ -1,9 +1,9 @@
 from flask import request
-from flask import Flask, url_for
+from flask_api import FlaskAPI, status, exceptions
 import blockchain
 #curl -H "Content-Type: application/json" -X POST -d '{"title": "test", "vote": "test666"}' http://127.0.0.1:5000/addBlock
 
-app = Flask(__name__)
+app = FlaskAPI(__name__)
 
 bc = blockchain.BlockChain()
 
