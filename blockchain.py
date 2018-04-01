@@ -95,7 +95,7 @@ class BlockChain():
                           indent=4, ensure_ascii=False)
                 logging.info('Created block with index: ' +
                              str(self.blocks_frame['blocks_count'] - 1))
-                return b
+                return block
             except Exception:
                 logging.exception('An exception occured when tried to write block %s to %s' %
                                   (str(blocks_frame['blocks_count'] - 1), self.BLOCK_FILENAME))
@@ -146,7 +146,7 @@ if __name__ == '__main__':
 
     def create_poll(title, options): 
         if not init_check():
-            create_block(init=options, title=title)
+            BlockChain.create_block(init=options, title=title)
         ...
     (because create_block with 'init' list creates genesis block)
 
