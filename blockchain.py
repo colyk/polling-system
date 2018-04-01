@@ -26,9 +26,9 @@ class BlockChain():
 
         # Поле тайтл только у генезис блока.
         # Варианты голосования в генезиз блоке. Другой вариант блока для генезиз блока.
-        # Добавить id голосующего (Fingerprint) https://github.com/Valve/fingerprintjs
-        self.block = {'title': '',
-                      'vote_for': '',
+        # Добавить id голосующего (Fingerprint)
+        # https://github.com/Valve/fingerprintjs
+        self.block = {'vote_for': '',
                       'previous_hash': '',
                       'timestamp': '',
                       'index': 0
@@ -36,7 +36,10 @@ class BlockChain():
 
         self.blocks_frame = {
             'blocks': [],
-            'blocks_count': 0
+            'blocks_count': 0,
+            'options': [],
+            'title': ''
+
         }
 
         # TODO: переделать, так как этот код исполняется при наследовании в
@@ -70,8 +73,9 @@ class BlockChain():
         file_dict = json.load(open(self.BLOCK_FILENAME))
         self.blocks_frame = file_dict
         logging.info('Loaded blocks from %s' % self.BLOCK_FILENAME)
-    
-    # Генезиз блок может иметь тайтл вида: Gen block. TITLE. Тогда можно исп. split('.')
+
+    # Генезиз блок может иметь тайтл вида: Gen block. TITLE. Тогда можно исп.
+    # split('.')
     def add_block(self, title='Genesis block', vote_for=''):
         block = self.block.copy()
         block['title'] = title
@@ -98,7 +102,7 @@ class BlockChain():
                                   (str(blocks_frame['blocks_count'] - 1), self.BLOCK_FILENAME))
 
     # Подумать о закрытии блоков кешем файла
-    def get_block_hash(self, block):
+    def get_block_hash(self, block) -> str:
         try:
             return hashlib.sha256(json.dumps(block).encode()).hexdigest()
         except Exception:
@@ -121,7 +125,8 @@ class BlockChain():
                                 is_block_integrated['index'])
             result.append(is_block_integrated.copy())
         if not result:
-        	logging.warning("There are not blocks to check poll_name: %s" % self.poll_name)
+            logging.warning(
+                "There are not blocks to check poll_name: %s" % self.poll_name)
         return result
 
     def get_current_blocks(self):
@@ -129,11 +134,11 @@ class BlockChain():
 
     @property
     def blocks_count(self):
-    	return self.blocks_frame['blocks_count']
+        return self.blocks_frame['blocks_count']
 
     @property
     def blocks_filename(self):
-    	return self.BLOCK_FILENAME
+        return self.BLOCK_FILENAME
 
 
 if __name__ == '__main__':
@@ -143,4 +148,3 @@ if __name__ == '__main__':
     b.add_block('2', "22")
     print(b.check_blocks_integrity())
     print(b.blocks_filename)
-

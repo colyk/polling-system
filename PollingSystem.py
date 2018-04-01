@@ -48,7 +48,7 @@ class PollingSystem(BlockChain):
     # Удаление блока голосования (Файла), после получения результата
     def __del__(self):
         old_polls_arch = zipfile.ZipFile(ARCHIVE_PATH, 'w')
-        old_polls_arch.write(super().blocks_filename)
+        old_polls_arch.write(open(super().blocks_filename))
         old_polls_arch.close()
         os.remove(super().blocks_filename)
 
