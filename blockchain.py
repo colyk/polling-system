@@ -7,11 +7,9 @@ import logging
 from config import *
 
 
-
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename=LOG_PATH, level=logging.NOTSET,
                     format='%(name)s:%(levelname)s:%(asctime)s:%(message)s')
-
 
 
 class BlockChain():
@@ -19,7 +17,7 @@ class BlockChain():
     def __init__(self, block_name='blocks'):
         if BLOCK_DIRNAME not in os.listdir():
             os.mkdir(BLOCK_DIRNAME)
-            
+
         self.BLOCK_FILENAME = '%s/%s/%s' % (os.curdir,
                                             BLOCK_DIRNAME, (lambda name: name if name.endswith('.json') else name + '.json')(block_name))
 
@@ -62,14 +60,14 @@ class BlockChain():
     def handle_options(self, vote_for) -> {}:
         next_vote_state = self.last_block['vote_state'].copy()
         if vote_for in self.last_block['vote_state']:
-            next_vote_state[vote_for] =  int(next_vote_state[vote_for]) + 1
+            next_vote_state[vote_for] = int(next_vote_state[vote_for]) + 1
         else:
             logging.warning('Invalid vote_for: %s' % vote_for)
         return next_vote_state
 
     def create_genesis_block(self, options):
         block = self.block.copy()
-        block['vote_for'] = self.create_vote_states(options)
+        self.create_vote_states(options)
         block['timestamp'] = time.time()
         block['index'] = 0
         block['prev_hash'] = 'Genesis block'
@@ -101,10 +99,10 @@ class BlockChain():
                 json.dump(self.blocks_frame, file,
                           indent=4, ensure_ascii=False)
                 logging.info('Created block with index: ' +
-                             str(self.blocks_frame['blocks_count'] - 1))
+                             str(self.blocks_frame['blocks_count']))
             except Exception:
                 logging.exception('An exception occured when tried to write block %s to %s' %
-                                  (str(blocks_frame['blocks_count'] - 1), self.BLOCK_FILENAME))
+                                  (str(blocks_frame['blocks_count']), self.BLOCK_FILENAME))
 
     @staticmethod
     def get_block_hash(block):
@@ -145,6 +143,9 @@ class BlockChain():
 
 if __name__ == '__main__':
     b = BlockChain()
-    b.create_genesis_block(['q','w'])
+    b.create_genesis_block(['q', 'w'])
     # print(b.create_vote_states(['q','w']))
     b.add_block('q')
+    b.add_block('q')
+    b.add_block('q')
+    b.add_block('w')

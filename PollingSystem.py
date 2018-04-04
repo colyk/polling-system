@@ -19,16 +19,16 @@ class PollingSystem(BlockChain):
                     (BLOCK_DIRNAME, poll_name))
         self.poll_name = poll_name
         if is_added:
-            super().create_genesis_block
+            super().create_genesis_block(options)
         else:
             if super().is_path_exist():
-                super().load_prev_blocks
+                super().load_prev_blocks()
             else:
                 logger.warning(
                     "Çan't load poll %s, because path doesn't exist" % poll_name)
 
     @classmethod
-    def add_poll(cls, poll_name='blocks', options=['lol', 'kek']):
+    def add_poll(cls, is_added=True, poll_name='blocks', options=['lol', 'kek']):
         logger.info('Created PollingSystem object')
         return cls(poll_name=poll_name, options=options)
 
@@ -57,4 +57,6 @@ class PollingSystem(BlockChain):
 
 
 if __name__ == '__main__':
-    p = PollingSystem()
+    p = PollingSystem.add_poll()
+    p.vote('lol')
+
