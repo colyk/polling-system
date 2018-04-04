@@ -62,7 +62,7 @@ class BlockChain():
         if vote_for in self.last_block['vote_state']:
             next_vote_state[vote_for] = int(next_vote_state[vote_for]) + 1
         else:
-            logging.warning('Invalid vote_for: %s' % vote_for)
+            return 0
         return next_vote_state
 
     def create_genesis_block(self, options):
@@ -86,7 +86,12 @@ class BlockChain():
 
     def add_block(self, vote_for=''):
         block = self.block.copy()
-        block['vote_state'] = self.handle_options(vote_for)
+        next_vote_state = self.handle_options(vote_for)
+        if next_vote_state:
+            block['vote_state'] = next_vote_state
+        else:
+            logging.warning('Invalid vote_for: %s' % vote_for)
+            return 0
         block['timestamp'] = time.time()
         block['index'] = self.blocks_frame['blocks_count']
         block['prev_hash'] = BlockChain.get_block_hash(

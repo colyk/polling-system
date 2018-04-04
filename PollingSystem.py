@@ -13,7 +13,7 @@ logging.basicConfig(filename=LOG_PATH, level=logging.NOTSET,
 
 class PollingSystem(BlockChain):
 
-    def __init__(self, is_added=True, poll_name='blocks', options=[]):
+    def __init__(self, options, is_added=True, poll_name='blocks'):
         super().__init__(poll_name)
         logger.info('Created PollingSystem object in %s with title %s' %
                     (BLOCK_DIRNAME, poll_name))
@@ -28,14 +28,14 @@ class PollingSystem(BlockChain):
                     "Сan't load poll %s, because path doesn't exist" % poll_name)
 
     @classmethod
-    def add_poll(cls, is_added=True, poll_name='blocks', options=['lol', 'kek']):
+    def add_poll(cls, options, is_added=True, poll_name='blocks'):
         logger.info('Created PollingSystem object')
         return cls(poll_name=poll_name, options=options)
 
     @classmethod
     def load_poll(cls, poll_name='blocks'):
         logger.info('Loaded PollingSystem object')
-        return cls(is_added=False, poll_name=poll_name)
+        return cls(is_added=False, poll_name=poll_name, options=[])
 
     def vote(self, vote_for):
         super().add_block(vote_for)
@@ -56,18 +56,20 @@ class PollingSystem(BlockChain):
 
     def zip_poll(self):
         old_polls_arch = zipfile.ZipFile(ARCHIVE_PATH, 'w')
-        old_polls_arch.write(super().blocks_filename)
+        old_polls_arch.write(self.BLOCK_FILENAME)
         old_polls_arch.close()
-        os.remove(super().blocks_filename)
+        os.remove(self.BLOCK_FILENAME)
 
     def __str__(self):
         return 'Amount of voters: %s; Title: %s; ' % (super().blocks_count, self.poll_name)
 
 
 if __name__ == '__main__':
-    # p = PollingSystem.add_poll()
-    # p.vote('lol')
-    # print(p)
-    p = PollingSystem.load_poll()
-    p.vote('kek')
-    print(p.get_poll_result(True))
+    p = PollingSystem.add_poll(['bu','ku'], poll_name='new')
+    p.vote('bu')
+    print(p)
+    p.zip_poll()
+
+    # p = PollingSystem.load_poll('new')
+    # p.vote('ku')
+    # print(p.get_poll_result(True))
