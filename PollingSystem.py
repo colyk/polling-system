@@ -1,59 +1,60 @@
 from blockchain import BlockChain
 import zipfile  # dafault installed in python v 3.5+
 import os
+import logging
 
-ARCHIVE_PATH = os.curdir + '/old_polls.zip'  # Saving old (deleted) polls
-LOG_PATH = 'logs/blockchain.log'
+from config import *
 
 logger = logging.getLogger(__name__)
 
 logging.basicConfig(filename=LOG_PATH, level=logging.NOTSET,
                     format='%(name)s:%(levelname)s:%(asctime)s:%(message)s')
 
+
 class PollingSystem(BlockChain):
-    """ 
-        poll_dirname - стандартный, в 1 папке хранятся все голосования.
-        poll_name - Название голосования. Каждое голосование имеет свой файл.
-    """
-    
-    def __init__(self, poll_name='blocks', logdir='logs'):
-        super().__init__(poll_name, logdir)
-        self.poll_name = poll_name.split('.')[0]
-        self.load_poll()
 
-    # Создание файла
-    def add_poll(self, options):
-        super().create_genesis_block()
-        super().create_block(self, options)
-
-    def vote(self, title, vote_for):
-        super().add_block(title, vote_for)
-
-    def load_poll(self):
-        if not super().init_check():
-            self.create_genesis_block()
+    def __init__(self, is_added=True, poll_name='blocks', options=[]):
+        super().__init__(poll_name)
+        logger.info('Created PollingSystem object in %s with title %s' %
+                    (BLOCK_DIRNAME, poll_name))
+        self.poll_name = poll_name
+        if is_added:
+            super().create_genesis_block
         else:
-            self.load_prev_blocks()
+            if super().is_path_exist():
+                super().load_prev_blocks
+            else:
+                logger.warning(
+                    "Çan't load poll %s, because path doesn't exist" % poll_name)
 
-        logging.info('Created BlockChain object in %s with poll_name %s' %
-                     (POLL_DIRNAME, poll_filename))
+    @classmethod
+    def add_poll(cls, poll_name='blocks', options=['lol', 'kek']):
+        logger.info('Created PollingSystem object')
+        return cls(poll_name=poll_name, options=options)
 
-    # hashmap with % ({'Barak':23.2, "Bush":76.8})
+    @classmethod
+    def load_poll(cls, poll_name='blocks'):
+        logger.info('Loaded PollingSystem object')
+        return cls(is_added=False, poll_name=poll_name)
+
+    def vote(self, vote_for):
+        super().add_block(vote_for)
+
     def get_poll_result(self):
-        pass
+        if all(super().check_blocks_integrity()):
+            print("Blocks are OK")
 
-    # Удаление блока голосования (Файла), после получения результата
-    def __del__(self):
-        old_polls_arch = zipfile.ZipFile(ARCHIVE_PATH, 'w')
-        old_polls_arch.write(super().blocks_filename)
-        old_polls_arch.close()
-        os.remove(super().blocks_filename)
+    # def __del__(self):
+    #     old_polls_arch = zipfile.ZipFile(ARCHIVE_PATH, 'w')
+    #     old_polls_arch.write(super().blocks_filename)
+    #     old_polls_arch.close()
+    #     os.remove(super().blocks_filename)
 
     # Вывод информации о голосании: Кандидаты, кол. гол.
-    def __str__(self):
-        return 'Amount of voters: %s; Title: %s; ' % (super().blocks_count, poll_name.split('.')[0])
+    # def __str__(self):
+    # return 'Amount of voters: %s; Title: %s; ' % (super().blocks_count,
+    # poll_name.split('.')[0])
 
 
 if __name__ == '__main__':
     p = PollingSystem()
-    print(ARCHIVE_PATH)
