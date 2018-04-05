@@ -38,13 +38,13 @@ class PollingSystem(BlockChain):
         return cls(is_added=False, poll_name=poll_name, options=[])
 
     def vote(self, vote_for):
-        super().add_block(vote_for)
+        return self.add_block(vote_for)
 
     def get_poll_result(self, count_corrupted_blocks=False):
         result = super().check_blocks_integrity()
+        print(result)
         if count_corrupted_blocks:
             return super().last_block['vote_state']
-
         if all(result):
             logger.info('Any block is not corrupted.')
             return super().last_block['vote_state']
@@ -60,16 +60,20 @@ class PollingSystem(BlockChain):
         old_polls_arch.close()
         os.remove(self.BLOCK_FILENAME)
 
+    @property
+    def info(self):
+        return self.last_block['vote_state']
+
     def __str__(self):
         return 'Amount of voters: %s; Title: %s; ' % (super().blocks_count, self.poll_name)
 
 
 if __name__ == '__main__':
-    p = PollingSystem.add_poll(['bu','ku'], poll_name='new')
-    p.vote('bu')
-    print(p)
-    p.zip_poll()
+    # p = PollingSystem.add_poll(['bu','ku'])
+    # p.vote('bu')
+    # print(p)
+    # p.zip_poll()
 
-    # p = PollingSystem.load_poll('new')
-    # p.vote('ku')
-    # print(p.get_poll_result(True))
+    p = PollingSystem.load_poll('new')
+    print(p.vote('kus'))
+    print(p.get_poll_result(True))

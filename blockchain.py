@@ -50,7 +50,8 @@ class BlockChain():
         return 0
 
     def create_vote_states(self, options):
-        self.block['vote_state'].update(list(zip(options, '0' * len(options))))
+        opts = [(opt, 0) for opt in options]
+        self.block['vote_state'].update(opts)
 
     def load_prev_blocks(self):
         file_dict = json.load(open(self.BLOCK_FILENAME))
@@ -99,7 +100,7 @@ class BlockChain():
 
         self.blocks_frame['blocks'].append(block)
         self.blocks_frame['blocks_count'] += 1
-# Вынести в отдельный метод
+
         with open(self.BLOCK_FILENAME, 'w') as file:
             try:
                 json.dump(self.blocks_frame, file,
@@ -109,6 +110,7 @@ class BlockChain():
             except Exception:
                 logging.exception('An exception occured when tried to write block %s to %s' %
                                   (str(blocks_frame['blocks_count']), self.BLOCK_FILENAME))
+        return 1
 
     @staticmethod
     def get_block_hash(block):
