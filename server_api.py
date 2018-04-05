@@ -13,11 +13,15 @@ def vote(poll_name, vote_for):
     return {'created': False}, status.HTTP_406_NOT_ACCEPTABLE, {'Access-Control-Allow-Origin': '*'}
 
 
-@app.route("/getResults/<poll_name>", methods=['GET'])
-def checkInt(poll_name):
+@app.route("/getResult/<poll_name>", methods=['GET'])
+def get_poll_result(poll_name):
     poll = PollingSystem.load_poll(poll_name)
     return poll.get_poll_result(), status.HTTP_200_OK, {'Access-Control-Allow-Origin': '*'}
 
+@app.route("/createPoll/<poll_name>", methods=['GET', 'POST'])
+def create_poll(poll_name):
+	pass
+	
 
 if __name__ == '__main__':
     app.run(debug=True)

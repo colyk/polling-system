@@ -19,10 +19,10 @@ class PollingSystem(BlockChain):
                     (BLOCK_DIRNAME, poll_name))
         self.poll_name = poll_name
         if is_added:
-            super().create_genesis_block(options)
+            self.create_genesis_block(options)
         else:
-            if super().is_path_exist():
-                super().load_prev_blocks()
+            if self.is_path_exist():
+                self.load_prev_blocks()
             else:
                 logger.warning(
                     "Сan't load poll %s, because path doesn't exist" % poll_name)
@@ -40,16 +40,23 @@ class PollingSystem(BlockChain):
     def vote(self, vote_for):
         return self.add_block(vote_for)
 
+    def is_fake(self, result):
+        for element in result:
+            if not element['result']:
+                return True
+        return False
+
     def get_poll_result(self, count_corrupted_blocks=False):
-        result = super().check_blocks_integrity()
-        print(result)
+        result = self.check_blocks_integrity()
         if count_corrupted_blocks:
-            return super().last_block['vote_state']
-        if all(result):
-            logger.info('Any block is not corrupted.')
-            return super().last_block['vote_state']
-        else:
+            return self.last_block['vote_state']
+
+        if self.is_fake(result):
             logger.info('Some block is corrupted.')
+            return 0
+        else:
+            logger.info('Any block is not corrupted.')
+            return self.last_block['vote_state']
 
     def load_from_zip(self):
         pass
@@ -60,12 +67,8 @@ class PollingSystem(BlockChain):
         old_polls_arch.close()
         os.remove(self.BLOCK_FILENAME)
 
-    @property
-    def info(self):
-        return self.last_block['vote_state']
-
     def __str__(self):
-        return 'Amount of voters: %s; Title: %s; ' % (super().blocks_count, self.poll_name)
+        return 'Amount of voters: %s; Title: %s; ' % (self.blocks_count, self.poll_name)
 
 
 if __name__ == '__main__':
@@ -75,5 +78,5 @@ if __name__ == '__main__':
     # p.zip_poll()
 
     p = PollingSystem.load_poll('new')
-    print(p.vote('kus'))
-    print(p.get_poll_result(True))
+    # print(p.vote(''))
+    print(p.get_poll_result(False))
