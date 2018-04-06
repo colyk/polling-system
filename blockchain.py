@@ -19,7 +19,7 @@ class BlockChain():
             os.mkdir(BLOCK_DIRNAME)
 
         self.BLOCK_FILENAME = '%s/%s/%s' % (os.curdir,
-                                            BLOCK_DIRNAME, (lambda name: name if name.endswith('.json') else name + '.json')(block_name))
+                                            BLOCK_DIRNAME, hashlib.md5(block_name.encode()).hexdigest() + '.json')
 
         # TODO: Add voter's id (Fingerprint)
         # https://github.com/Valve/fingerprintjs
@@ -135,10 +135,6 @@ class BlockChain():
     @property
     def blocks_count(self):
         return self.blocks_frame['blocks_count']
-
-    @property
-    def blocks_filename(self):
-        return self.BLOCK_FILENAME
 
     @property
     def last_block(self):
