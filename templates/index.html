@@ -13,12 +13,14 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
     <link rel="stylesheet" href="css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
     <title>Voting Server</title>
 </head>
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-static-top" id="header">
+    <nav class="navbar navbar-dark bg-dark fixed-top" id="header">
         <div class="container-fluid">
             <div class="navbar-header">
             </div>
@@ -28,33 +30,15 @@
     <div class="container" id="content">
         <div class="row">
             <div class="col-md-8 mx-auto">
-                <div class="btn-group" role="group" aria-label="...">
-                    <button id="get-btn" type="button" class="btn btn-default">Get blocks</button>
-                    <button id="chk-btn" type="button" class="btn btn-default">Check blocks</button>
-                    <button id="crt-btn" type="button" class="btn btn-default" data-toggle="modal" data-target=".bs-modal-sm">Create block</button>
-                </div>
-                <div class="panel panel-default">
+                <div class="panel">
                     <div class="panel-heading">
-                        <h4 class="panel-title">Current blocks <span id="blocks-count" class="badge">?</span>
-                            </h4></div>
+                        <h4>Current blocks <span id="blocks-count" class="badge badge-dark">?</span>
+                        </h4>
+                        <button class="btn btn-sm" onclick='testAdd()'>Test Add</button>
+                    </div>
                     <div id="blocks-panel" class="panel-body">
                         <ul class="list-group">
                         </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div tabindex="-1" role="dialog" style="display: none;" class="modal fade bs-modal-sm" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <input type="text" id="input-title" class="form-control" placeholder="Title">
-                        <br/>
-                        <input type="text" id="input-vote" class="form-control" placeholder="Vote for">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-sm" data-dismiss="modal">Close</button>
-                        <button type="button" id="create-block-btn" class="btn btn-sm" data-dismiss="modal">Vote</button>
                     </div>
                 </div>
             </div>
@@ -99,7 +83,7 @@
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script src='js/main.js' defer></script>
+    <script src="js/main.js" defer></script>
 </body>
 
 </html>
