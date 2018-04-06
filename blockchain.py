@@ -14,7 +14,7 @@ logging.basicConfig(filename=LOG_PATH, level=logging.NOTSET,
 
 class BlockChain():
 
-    def __init__(self, block_name='blocks'):
+    def __init__(self, description='v', block_name='blocks'):
         if BLOCK_DIRNAME not in os.listdir():
             os.mkdir(BLOCK_DIRNAME)
 
@@ -33,7 +33,8 @@ class BlockChain():
         self.blocks_frame = {
             'blocks': [],
             'blocks_count': 0,
-            'title': block_name
+            'title': block_name,
+            'description': description
         }
 
         logging.info('Created BlockChain object in %s with block_name %s' %
@@ -66,24 +67,17 @@ class BlockChain():
             return 0
         return next_vote_state
 
-    def create_genesis_block(self, options):
+    def create_genesis_block(self, options, termination_time):
         self.create_vote_states(options)
 
         block = self.block.copy()
         block['timestamp'] = time.time()
         block['index'] = 0
+        block['termination_time'] = termination_time
         block['prev_hash'] = 'Genesis block'
         self.blocks_frame['blocks'].append(block)
         self.blocks_frame['blocks_count'] = 1
-
-        with open(self.BLOCK_FILENAME, 'w') as file:
-            try:
-                json.dump(self.blocks_frame, file,
-                          indent=4, ensure_ascii=False)
-                logging.info('Created block with index 0')
-            except Exception:
-                logging.exception('An exception occured when tried to write block 0 to %s' %
-                                  self.BLOCK_FILENAME)
+        self.write_block()
 
     def add_block(self, vote_for=''):
         block = self.block.copy()
@@ -100,17 +94,19 @@ class BlockChain():
 
         self.blocks_frame['blocks'].append(block)
         self.blocks_frame['blocks_count'] += 1
+        self.write_block()
+        return 1
 
+    def write_block(self):
         with open(self.BLOCK_FILENAME, 'w') as file:
             try:
                 json.dump(self.blocks_frame, file,
                           indent=4, ensure_ascii=False)
                 logging.info('Created block with index: ' +
-                             str(self.blocks_frame['blocks_count']))
+                             str(self.blocks_count))
             except Exception:
                 logging.exception('An exception occured when tried to write block %s to %s' %
-                                  (str(blocks_frame['blocks_count']), self.BLOCK_FILENAME))
-        return 1
+                                  (str(self.blocks_count), self.BLOCK_FILENAME))
 
     @staticmethod
     def get_block_hash(block):
@@ -126,7 +122,7 @@ class BlockChain():
             'index': 0,
             'result': 0
         }
-        for index in range(1, self.blocks_frame['blocks_count']):
+        for index in range(1, self.blocks_count):
             is_block_integrated['index'] = index - 1
             is_block_integrated['result'] = self.blocks_frame['blocks'][index][
                 'prev_hash'] == BlockChain.get_block_hash(self.blocks_frame['blocks'][index - 1])
@@ -148,8 +144,17 @@ class BlockChain():
     def last_block(self):
         return self.blocks_frame['blocks'][-1]
 
+    @property
+    def first_block(self):
+        return self.blocks_frame['blocks'][0]
+
 
 if __name__ == '__main__':
     b = BlockChain()
-    b.load_prev_blocks()
-    b.add_block('lol')
+    b.create_genesis_block(['a'], 0)
+    # b.load_prev_blocks()
+    b.add_block('a')
+    b.add_block('a')
+    b.add_block('a')
+    print(b.check_blocks_integrity())
+    # b.load_prev_blocks()

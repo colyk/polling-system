@@ -5,6 +5,7 @@ from polling_system import PollingSystem
 
 app = FlaskAPI(__name__)
 
+
 @app.route("/vote/<poll_name>/<vote_for>", methods=['GET', 'POST'])
 def vote(poll_name, vote_for):
     poll = PollingSystem.load_poll(poll_name)
@@ -18,10 +19,13 @@ def get_poll_result(poll_name):
     poll = PollingSystem.load_poll(poll_name)
     return poll.get_poll_result(), status.HTTP_200_OK, {'Access-Control-Allow-Origin': '*'}
 
+
 @app.route("/createPoll/<poll_name>", methods=['GET', 'POST'])
 def create_poll(poll_name):
-	pass
-	
+    print(request.values)
+    print(request.get_json())
+    return {'created': True}, status.HTTP_201_CREATED, {'Access-Control-Allow-Origin': '*'}
+
 
 if __name__ == '__main__':
     app.run(debug=True)
