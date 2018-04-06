@@ -2,6 +2,7 @@ from blockchain import BlockChain
 import zipfile  # dafault installed in python v 3.5+
 import os
 import logging
+import json
 
 from config import *
 
@@ -76,13 +77,22 @@ class PollingSystem(BlockChain):
         old_polls_arch.close()
         os.remove(self.BLOCK_FILENAME)
 
+    def get_active_polls(self):
+        result = {
+            'polls': []
+        }
+        for file in os.listdir(BLOCK_DIRNAME):
+            result['polls'].append(
+                json.load(open(BLOCK_DIRNAME + "/" + file))['title'])
+        return result
+
     def load_from_zip(self):
         pass
 
 
 if __name__ == '__main__':
     p = PollingSystem.add_poll(['bu', 'ku'], termination_time=0)
-    # p.vote('bu')
+    p.vote('bu')
     # p.zip_poll()
 
     # p = PollingSystem.load_poll()
@@ -90,3 +100,4 @@ if __name__ == '__main__':
     # p.vote('ku')
     print(p.get_poll_result(False))
     print(p.get_info())
+    print(p.get_active_polls())
