@@ -1,61 +1,128 @@
 body {
-	background-color: #606060;
-	color: #f0f0f0;
+    background-color: #606060;
+    color: #f0f0f0;
+    font-size: 20px;
+    font-family: 'Lora', 'Times New Roman', serif;
+    float: center;
 }
+
 #header {
-	min-height: 50px;
-	background-color: #414141;
+    min-height: 50px;
+    background-color: #414141;
 }
+
 #content {
-	min-height: 500px;
-	background: #4141411a;
-	padding-top: 10px;
+    min-height: 500px;
+    background: #4141411a;
+    padding-top: 10px;
 }
+
 .btn:hover {
-	color: #f0f0f0;
+    color: #f0f0f0;
 }
+
 .btn-group {
-	border-color: #f0f0f0;
-	border-width: 1px;
-	border-style: solid;
-	border-radius: 6px;
+    border-color: #f0f0f0;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 6px;
 }
+
 .panel {
-	margin-top: 10px;
+    margin-top: 10px;
 }
+
 .badge {
-	background-color: #414141;
+    background-color: #414141;
 }
+
 .list-group-item {
-	background-color: #e8e8e7;
-	color: #2e3436;
+    background-color: #e8e8e7;
+    color: #2e3436;
 }
 
 .list-group-item>.badge {
-  color: #f0f0f0;
+    color: #f0f0f0;
 }
 
 .modal-dialog {
-	padding: 10px;
-	background-color: #414141;
+    padding: 10px;
+    background-color: #414141;
 }
 
 .form-control {
-	background-color: #e8e8e7;
+    background-color: #e8e8e7;
 }
 
 .modal-body {
-	background-color: #414141;
+    background-color: #414141;
 }
 
 .modal-footer {
-	background-color: #414141;
+    background-color: #414141;
 }
 
 .label-primary {
-	background-color: #5c5c5c;
+    background-color: #5c5c5c;
     color: #f0f0f0;
     border-radius: 3px;
     padding: 2px 4px;
     margin-right: 4px;
+}
+
+p {
+    line-height: 1.5;
+    margin: 30px 0;
+}
+
+p a {
+    text-decoration: underline;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 800;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+a {
+    color: #212529;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+header {
+    margin: 50px;
+    float: center;
+    text-align: center;
+}
+
+a:focus,
+a:hover {
+    color: #0085A1;
+}
+
+blockquote {
+    font-style: italic;
+    color: #868e96;
+}
+
+footer {
+    padding: 50px 0 65px;
+}
+
+footer .list-inline {
+    margin: 0;
+    padding: 0;
+}
+
+footer .copyright {
+    font-size: 14px;
+    margin-bottom: 0;
+    text-align: center;
 }
