@@ -19,7 +19,7 @@ class BlockChain():
             os.mkdir(BLOCK_DIRNAME)
 
         self.BLOCK_FILENAME = '%s/%s/%s' % (os.curdir,
-                                            BLOCK_DIRNAME, hashlib.md5(block_name.encode()).hexdigest() + '.json')
+                                            BLOCK_DIRNAME, hashlib.sha224(block_name.encode()).hexdigest() + '.json')
 
         # TODO: Add voter's id (Fingerprint)
         # https://github.com/Valve/fingerprintjs

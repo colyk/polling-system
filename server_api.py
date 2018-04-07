@@ -27,5 +27,16 @@ def create_poll(poll_name):
     return {'created': True}, status.HTTP_201_CREATED, {'Access-Control-Allow-Origin': '*'}
 
 
+@app.route("/getPolls/", methods=['GET'])
+def get_active_polls():
+    return PollingSystem.get_active_polls(), status.HTTP_200_OK, {'Access-Control-Allow-Origin': '*'}
+
+
+@app.route("/getPollInfo/<poll_name>", methods=['GET', 'POST'])
+def get_info(poll_name):
+    poll = PollingSystem.load_poll(poll_name)
+    return poll.get_info(), status.HTTP_200_OK, {'Access-Control-Allow-Origin': '*'}
+
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -48,6 +48,16 @@ class PollingSystem(BlockChain):
                 return True
         return False
 
+    @staticmethod
+    def get_active_polls():
+        result = {
+            'polls': []
+        }
+        for file in os.listdir(BLOCK_DIRNAME):
+            result['polls'].append(
+                json.load(open(BLOCK_DIRNAME + "/" + file))['title'])
+        return result
+
     def get_info(self):
         info = {
             'title': self.blocks_frame['title'],
@@ -72,19 +82,12 @@ class PollingSystem(BlockChain):
             return self.last_block['vote_state']
 
     def zip_poll(self):
+        # Закрытие последний блоком - хеш файла
         old_polls_arch = zipfile.ZipFile(ARCHIVE_PATH, 'w')
         old_polls_arch.write(self.BLOCK_FILENAME)
         old_polls_arch.close()
         os.remove(self.BLOCK_FILENAME)
 
-    def get_active_polls(self):
-        result = {
-            'polls': []
-        }
-        for file in os.listdir(BLOCK_DIRNAME):
-            result['polls'].append(
-                json.load(open(BLOCK_DIRNAME + "/" + file))['title'])
-        return result
 
     def load_from_zip(self):
         pass
@@ -100,4 +103,4 @@ if __name__ == '__main__':
     # p.vote('ku')
     print(p.get_poll_result(False))
     print(p.get_info())
-    print(p.get_active_polls())
+    print(PollingSystem.get_active_polls())
