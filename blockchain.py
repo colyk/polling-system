@@ -147,10 +147,10 @@ class BlockChain():
 
 if __name__ == '__main__':
     b = BlockChain()
-    b.create_genesis_block(['a'], 0)
-    # b.load_prev_blocks()
-    b.add_block('a')
-    b.add_block('a')
+    # b.create_genesis_block(['a'], 0)
+    b.load_prev_blocks()
+    # b.add_block('a')
+    # b.add_block('a')
     b.add_block('a')
     print(b.check_blocks_integrity())
     # b.load_prev_blocks()

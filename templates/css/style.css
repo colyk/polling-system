@@ -4,11 +4,14 @@ body {
     font-size: 20px;
     font-family: 'Lora', 'Times New Roman', serif;
     float: center;
+    margin-top:50px;
+
 }
 
 #header {
     min-height: 50px;
     background-color: #414141;
+
 }
 
 #content {
