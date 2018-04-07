@@ -73,7 +73,7 @@ function genRandWord() {
 
 function testAdd() {
     let t = genRandWord();
-    $('ul').append(createPollListItem(t));
+    $('#blocks-panel ul').append(createPollListItem(t));
 }
 
 
