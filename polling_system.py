@@ -54,8 +54,11 @@ class PollingSystem(BlockChain):
             'polls': []
         }
         for file in os.listdir(BLOCK_DIRNAME):
-            result['polls'].append(
-                json.load(open(BLOCK_DIRNAME + "/" + file))['title'])
+            try:
+                result['polls'].append(json.load(open(BLOCK_DIRNAME + "/" + file))['title'])
+            except Exception as e:
+                logger.warning(
+                    "Poll in file %s is not valid, no title found" % poll_name)
         return result
 
     def get_info(self):
