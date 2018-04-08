@@ -9,7 +9,7 @@ virtualenv env
 env\Scripts\activate
 
 pip install flask
-pip install flask-restful
+pip install -U flask-cors
 
 python server.py
 ```

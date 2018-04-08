@@ -10,6 +10,7 @@ CORS(app)
 # created = {'created': True}
 # not_created = {'created': False}
 
+
 @app.route("/addVote/", methods=['GET', 'POST'])
 def vote():
     try:
@@ -42,7 +43,7 @@ def create_poll():
         options = request.get_json()['options']
     except Exception:
         return {'created': False}, status.HTTP_406_NOT_ACCEPTABLE, {'Access-Control-Allow-Origin': '*'}
-    poll = PollingSystem.add_poll(
+    PollingSystem.add_poll(
         poll_name=poll_name, description=description, options=options)
     return {'created': True}, status.HTTP_201_CREATED, {'Access-Control-Allow-Origin': '*'}
 
@@ -64,4 +65,3 @@ def get_info():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
