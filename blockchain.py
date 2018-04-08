@@ -14,7 +14,7 @@ logging.basicConfig(filename=LOG_PATH, level=logging.NOTSET,
 
 class BlockChain():
 
-    def __init__(self, description='v', block_name='blocks'):
+    def __init__(self, description='', block_name='blocks'):
         if BLOCK_DIRNAME not in os.listdir():
             os.mkdir(BLOCK_DIRNAME)
 
@@ -101,7 +101,7 @@ class BlockChain():
         with open(self.BLOCK_FILENAME, 'w') as file:
             try:
                 json.dump(self.blocks_frame, file,
-                          indent=4, ensure_ascii=False)
+                          indent=4, ensure_ascii=False,sort_keys=True)
                 logging.info('Created block with index: ' +
                              str(self.blocks_count))
             except Exception:
@@ -111,7 +111,7 @@ class BlockChain():
     @staticmethod
     def get_block_hash(block):
         try:
-            return hashlib.sha256(json.dumps(block).encode()).hexdigest()
+            return hashlib.sha256(json.dumps(block,sort_keys=True).encode()).hexdigest()
         except Exception:
             logging.exception(
                 'An exception occured when tried to get hash %s block' % str(block['index']))
