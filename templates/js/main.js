@@ -67,7 +67,7 @@ function createPollListItem(title) {
 }
 
 function getPolls() {
-    $.getJSON(base_url+'getPolls/', {}, processGetPolls, 'json')
+    $.getJSON(base_url+'getActivePolls/', {}, processGetPolls, 'json')
 }
 
 
@@ -84,9 +84,8 @@ function createPoll(title, description, options) {
             'options': options
         },
         str_poll_data = JSON.stringify(poll_data);
-    
 
-    $.ajax({url: base_url+'createPoll/', type: 'POST', data: str_poll_data, dataType: 'json', success: (data) => {console.log(data); getPolls();}, contentType: 'application/json'});
+    $.ajax({url: base_url+'createPoll/', type: 'POST', data: str_poll_data, dataType: 'json', success: (data) => {console.log(data); getPolls();}, /*contentType: 'application/json'*/});
     console.log(poll_data);
     return poll_data
 }

@@ -2,10 +2,10 @@ from flask import request
 from flask_api import FlaskAPI, status
 from polling_system import PollingSystem
 from flask_cors import CORS
-# curl -H "Content-Type: application/json" -X POST -d '{"title": "test", "vote": "test666"}' http://127.0.0.1:5000/addBlock
+# curl -H "Content-Type: application/json" -X POST -d '{"poll_name": "test123", "description": "test666"}' http://127.0.0.1:5000/createPoll/
 # requests.post('http://127.0.0.1:5000/createPoll/', json={'poll_name':'kek', "description": 'fdsdfs', 'options': ['lol', 'kek']})
 app = FlaskAPI(__name__)
-CORS(app)
+#CORS(app)
 
 HEADER = {'Access-Control-Allow-Origin': '*'}
 
@@ -46,17 +46,17 @@ def get_poll_result():
 @app.route("/createPoll/", methods=['GET', 'POST'])
 def create_poll():
     try:
-        poll_name = request.get_json()['poll_name']
+        poll_name = request.get_json(force=True)['poll_name']
     except Exception:
         return {'code': '400', 'msg': 'json must insist poll_name key'}, status.HTTP_400_BAD_REQUEST, HEADER
 
     try:
-        description = request.get_json()['description']
+        description = request.get_json(force=True)['description']
     except Exception:
         return {'code': '400', 'msg': 'json must insist poll_name description'}, status.HTTP_400_BAD_REQUEST, HEADER
 
     try:
-        options = request.get_json()['options']
+        options = request.get_json(force=True)['options']
     except Exception:
         return {'code': '400', 'msg': 'json must insist options: [] key'}, status.HTTP_400_BAD_REQUEST, HEADER
 
@@ -88,4 +88,4 @@ def get_info():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
