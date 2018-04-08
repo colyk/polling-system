@@ -40,6 +40,26 @@ class BlockChain():
         logging.info('Created BlockChain object in %s with block_name %s' %
                      (BLOCK_DIRNAME, block_name))
 
+    @property
+    def blocks_count(self):
+        return self.blocks_frame['blocks_count']
+
+    @property
+    def last_block(self):
+        return self.blocks_frame['blocks'][-1]
+
+    @property
+    def first_block(self):
+        return self.blocks_frame['blocks'][0]
+
+    @staticmethod
+    def get_block_hash(block):
+        try:
+            return hashlib.sha256(json.dumps(block, sort_keys=True).encode()).hexdigest()
+        except Exception:
+            logging.exception(
+                'An exception occured when tried to get hash %s block' % str(block['index']))
+
     def is_path_exist(self):
         if not os.path.isfile(self.BLOCK_FILENAME):
             return 0
@@ -101,20 +121,12 @@ class BlockChain():
         with open(self.BLOCK_FILENAME, 'w') as file:
             try:
                 json.dump(self.blocks_frame, file,
-                          indent=4, ensure_ascii=False,sort_keys=True)
+                          indent=4, ensure_ascii=False, sort_keys=True)
                 logging.info('Created block with index: ' +
                              str(self.blocks_count))
             except Exception:
                 logging.exception('An exception occured when tried to write block %s to %s' %
                                   (str(self.blocks_count), self.BLOCK_FILENAME))
-
-    @staticmethod
-    def get_block_hash(block):
-        try:
-            return hashlib.sha256(json.dumps(block,sort_keys=True).encode()).hexdigest()
-        except Exception:
-            logging.exception(
-                'An exception occured when tried to get hash %s block' % str(block['index']))
 
     def check_blocks_integrity(self) -> []:
         result = list()
@@ -132,25 +144,13 @@ class BlockChain():
             result.append(is_block_integrated.copy())
         return result
 
-    @property
-    def blocks_count(self):
-        return self.blocks_frame['blocks_count']
-
-    @property
-    def last_block(self):
-        return self.blocks_frame['blocks'][-1]
-
-    @property
-    def first_block(self):
-        return self.blocks_frame['blocks'][0]
-
 
 if __name__ == '__main__':
     b = BlockChain()
-    # b.create_genesis_block(['a'], 0)
-    b.load_prev_blocks()
-    # b.add_block('a')
-    # b.add_block('a')
+    b.create_genesis_block(['a'], 0)
+    # b.load_prev_blocks()
+    b.add_block('a')
+    b.add_block('a')
     b.add_block('a')
     print(b.check_blocks_integrity())
     # b.load_prev_blocks()

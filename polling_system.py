@@ -38,9 +38,6 @@ class PollingSystem(BlockChain):
         logger.info('Loaded PollingSystem object')
         return cls(is_added=False, poll_name=poll_name, options=[])
 
-    def vote(self, vote_for):
-        return self.add_block(vote_for)
-
     @staticmethod
     def is_fake(result):
         for element in result:
@@ -56,10 +53,13 @@ class PollingSystem(BlockChain):
         for file in os.listdir(BLOCK_DIRNAME):
             try:
                 result['polls'].append(json.load(open(BLOCK_DIRNAME + "/" + file))['title'])
-            except Exception as e:
+            except Exception:
                 logger.warning(
                     "Poll in file %s is not valid, no title found" % file)
         return result
+
+    def vote(self, vote_for):
+        return self.add_block(vote_for)
 
     def get_info(self):
         info = {
@@ -90,7 +90,6 @@ class PollingSystem(BlockChain):
         old_polls_arch.write(self.BLOCK_FILENAME)
         old_polls_arch.close()
         os.remove(self.BLOCK_FILENAME)
-
 
     def load_from_zip(self):
         pass
