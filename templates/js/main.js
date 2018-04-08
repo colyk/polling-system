@@ -16,7 +16,8 @@ String.prototype.hashCode = function() {
 const base_url = 'http://127.0.0.1:5000/'
 
 function initUI() {
-
+    $('#get-polls-btn').click(getPolls);
+    $('#test-crt-btn').click(testAdd);
 }
 
 function createPollListItem(title) {
@@ -32,19 +33,23 @@ function createPollListItem(title) {
         poll_dsc_p   = $('<p/>'),
         poll_stats   = $('<div class="poll-stats" />');
 
+    let changeArrow = function() {
+        if (c_arrow.hasClass('down')) {
+            c_arrow.removeClass('down');
+            c_arrow.addClass('up');
+        } else {
+            c_arrow.removeClass('up');
+            c_arrow.addClass('down'); 
+        }
+    }
     c_btn.append(c_arrow)
-         .click(() => {
-            if (c_arrow.hasClass('down')) {
-                c_arrow.removeClass('down');
-                c_arrow.addClass('up');
-            } else {
-                c_arrow.removeClass('up');
-                c_arrow.addClass('down'); 
-            }
-         })
+         .click(changeArrow)
          .attr({'data-toggle': 'collapse', 'data-target': '#collapse'+title_hash});
     
-    title_span.text(title);
+    title_span.text(title)
+              .attr({'data-toggle': 'collapse', 'data-target': '#collapse'+title_hash})
+              .css('cursor', 'pointer')
+              .click(changeArrow);
 
     title_head.append(title_span)
               .append(c_btn);
@@ -61,9 +66,34 @@ function createPollListItem(title) {
     return li
 }
 
-function genRandWord() {
-    let len = randomInt(8,20),
-        a09 = 'qwertyuiopasdfghjklzxcvbnm1234567890'.split(''),
+function getPolls() {
+    $.getJSON(base_url+'getPolls/', {}, processGetPolls, 'json')
+}
+
+
+function getPollInfo(title) {
+
+}
+
+function createPoll(title, description, options) {
+    //wip
+
+    let poll_data = {
+            'poll_name': title,
+            'description': description,
+            'options': options
+        },
+        str_poll_data = JSON.stringify(poll_data);
+    
+
+    $.ajax({url: base_url+'createPoll/', type: 'POST', data: str_poll_data, dataType: 'json', success: (data) => {console.log(data); getPolls();}, contentType: 'application/json'});
+    console.log(poll_data);
+    return poll_data
+}
+
+function genRandWord(len) {
+    len = len ? len : randomInt(5,20);
+    let a09 = 'qwertyuiopasdfghjklzxcvbnm 1234567890'.split(''),
         str = '';
     for (let i = 0; i < len; i++) {
         str += a09[randomInt(0, a09.length-1)]
@@ -72,8 +102,10 @@ function genRandWord() {
 }
 
 function testAdd() {
-    let t = genRandWord();
-    $('#blocks-panel ul').append(createPollListItem(t));
+    let t = genRandWord(),
+        d = genRandWord(75),
+        o = [genRandWord(), genRandWord(), genRandWord()];
+    createPoll(t, d, o);
 }
 
 
@@ -104,12 +136,14 @@ function handleCheckBtn() {
     alert('not available');
 }
 
-function processGet(data) {
+function processGetPolls(data) {
     console.log(data);
-    $('#blocks-count').text(data.blocks_count);
-    for (let b in data.blocks) {
-        if (!$('#block-'+b).text()) {
-            $('ul.list-group').append(blockItem(b, data.blocks[b]));
+    $('#polls-count').text(data['polls'].length);
+    for (let n in data['polls']) {
+        let t = data['polls'][n],
+            h = t.hashCode();
+        if (!$('li#'+h).length) {
+            $('#polls-panel ul').append(createPollListItem(t));
         }
     }
 }
