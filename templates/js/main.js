@@ -26,7 +26,7 @@ function createPollListItem(title) {
     let li           = $('<li class="list-group-item" />'),
         c_btn        = $('<button class="btn btn-sm float-right collapse-btn" />'),
         title_span   = $('<span/>'),
-        c_arrow      = $('<i class="arrow down" />'),
+        c_arrow      = $('<i id="l"class="arrow down" />'),
         title_head   = $('<div/>'),
         poll_content = $('<div class="container collapse poll-content" />'),
         poll_dsc_div = $('<div class="poll-description" />'),
@@ -67,7 +67,7 @@ function createPollListItem(title) {
 }
 
 function getPolls() {
-    $.getJSON(base_url+'getPolls/', {}, processGetPolls, 'json')
+    $.getJSON(base_url+'getActivePolls/', {}, processGetPolls, 'json')
 }
 
 

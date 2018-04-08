@@ -136,7 +136,7 @@ footer .copyright {
 .row {
 	margin-bottom: 5px;
 }
-i {
+i#l {
     border: solid black;
     border-width: 0 3px 3px 0;
     display: inline-block;
