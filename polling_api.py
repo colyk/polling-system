@@ -15,13 +15,17 @@ CORS(app)
 def vote():
     try:
         poll_name = request.get_json()['poll_name']
+    except Exception:
+        return {'code': '400', 'msg': 'json must insist poll_name key'}, status.HTTP_400_BAD_REQUEST, {'Access-Control-Allow-Origin': '*'}
+    try:
         vote_for = request.get_json()['vote_for']
     except Exception:
-        return {'created': False}, status.HTTP_406_NOT_ACCEPTABLE, {'Access-Control-Allow-Origin': '*'}
+        return {'code': '400', 'msg': 'json must insist vote_for key'}, status.HTTP_400_BAD_REQUEST, {'Access-Control-Allow-Origin': '*'}
+
     poll = PollingSystem.load_poll(poll_name)
     if poll.vote(vote_for):
-        return {'created': True}, status.HTTP_201_CREATED, {'Access-Control-Allow-Origin': '*'}
-    return {'created': False}, status.HTTP_406_NOT_ACCEPTABLE, {'Access-Control-Allow-Origin': '*'}
+        return {'code': '201'}, status.HTTP_201_CREATED, {'Access-Control-Allow-Origin': '*'}
+    return {'code': '500', 'msg': 'vote_for: %s is not in polling options' % vote_for}, status.HTTP_500_INTERNAL_SERVER_ERROR, {'Access-Control-Allow-Origin': '*'}
 
 
 @app.route("/getResult/", methods=['GET', 'POST'])
@@ -29,7 +33,7 @@ def get_poll_result():
     try:
         poll_name = request.get_json()['poll_name']
     except Exception:
-        return {'created': False}, status.HTTP_406_NOT_ACCEPTABLE, {'Access-Control-Allow-Origin': '*'}
+        return {'created': False}, status.HTTP_400_BAD_REQUEST, {'Access-Control-Allow-Origin': '*'}
     poll = PollingSystem.load_poll(poll_name)
     return poll.get_poll_result(), status.HTTP_200_OK, {'Access-Control-Allow-Origin': '*'}
 
@@ -42,7 +46,7 @@ def create_poll():
         description = request.get_json()['description']
         options = request.get_json()['options']
     except Exception:
-        return {'created': False}, status.HTTP_406_NOT_ACCEPTABLE, {'Access-Control-Allow-Origin': '*'}
+        return {'created': False}, status.HTTP_400_BAD_REQUEST, {'Access-Control-Allow-Origin': '*'}
     PollingSystem.add_poll(
         poll_name=poll_name, description=description, options=options)
     return {'created': True}, status.HTTP_201_CREATED, {'Access-Control-Allow-Origin': '*'}
@@ -58,7 +62,7 @@ def get_info():
     try:
         poll_name = request.get_json()['poll_name']
     except Exception:
-        return {'created': False}, status.HTTP_406_NOT_ACCEPTABLE, {'Access-Control-Allow-Origin': '*'}
+        return {'created': False}, status.HTTP_400_BAD_REQUEST, {'Access-Control-Allow-Origin': '*'}
     poll = PollingSystem.load_poll(poll_name)
     return poll.get_info(), status.HTTP_200_OK, {'Access-Control-Allow-Origin': '*'}
 

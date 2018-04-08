@@ -9,6 +9,7 @@ virtualenv env
 env\Scripts\activate
 
 pip install flask
+pip install Flask-API
 pip install -U flask-cors
 
 python server.py
