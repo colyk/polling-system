@@ -2,9 +2,11 @@ from flask import request
 from flask_api import FlaskAPI, status
 from polling_system import PollingSystem
 
-# curl -H "Content-Type: application/json" -X POST -d '{"title": "test", "vote": "test666"}' http://127.0.0.1:5000/addBlock
+from flask_cors import CORS
+# curl -H "Content-Type: application/json" -X POST -d '{"poll_name": "test123", "description": "test666"}' http://127.0.0.1:5000/createPoll/
 # requests.post('http://127.0.0.1:5000/createPoll/', json={'poll_name':'kek', "description": 'fdsdfs', 'options': ['lol', 'kek']})
 app = FlaskAPI(__name__)
+#CORS(app)
 
 
 HEADER = {'Access-Control-Allow-Origin': '*'}
