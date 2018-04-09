@@ -77,6 +77,7 @@ function createPollOptions(title, option, count, total_sum) {
         prog_bar = $('<div role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-dark">'),
         vote_btn = $('<button class="btn btn-sm btn-dark btn-block" data-toggle="tooltip" data-placement="left" title=""/>').text(option);
     let percent = ((count * 100.0) / total_sum).toFixed(2);
+    if (isNaN(percent)){percent = 0;}
 
     vote_btn.click(() => {
             let data = JSON.stringify({

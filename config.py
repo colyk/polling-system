@@ -1,3 +1,3 @@
 BLOCK_DIRNAME = 'polls'
-LOG_PATH = 'logs/blockchain.log'
+LOG_PATH = 'logs.log'
 ARCHIVE_PATH = './old_polls.zip'

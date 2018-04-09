@@ -1,5 +1,5 @@
 env
-logs
+logs.log
 __pycache__
 blocks
 polls

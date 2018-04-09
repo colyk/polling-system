@@ -86,7 +86,7 @@ class PollingSystem(BlockChain):
 
     def zip_poll(self):
         # Закрытие последний блоком - хеш файла
-        old_polls_arch = zipfile.ZipFile(ARCHIVE_PATH, 'w')
+        old_polls_arch = zipfile.ZipFile(ARCHIVE_PATH, 'a')
         old_polls_arch.write(self.BLOCK_FILENAME)
         old_polls_arch.close()
         os.remove(self.BLOCK_FILENAME)
@@ -96,14 +96,15 @@ class PollingSystem(BlockChain):
 
 
 if __name__ == '__main__':
-    # p = PollingSystem.add_poll(['bu', 'ku'], termination_time=0)
-    # p.vote('bu')
+    p = PollingSystem.add_poll(poll_name = "qqqq", options = ['bu', 'ku'], termination_time=0)
+    p.vote('bu')
     # p.zip_poll()
 
     # p = PollingSystem.load_poll()
     # for i in range(100):
     # p.vote('ku')
-    p = PollingSystem.load_poll('kek')
+    # p = PollingSystem.load_poll('kek')
     print(p.get_poll_result(False))
     print(p.get_info())
-    print(PollingSystem.get_active_polls())
+    # print(PollingSystem.get_active_polls())
+    p.zip_poll()
