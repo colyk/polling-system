@@ -14,12 +14,12 @@ HEADER = {'Access-Control-Allow-Origin': '*'}
 @app.route("/addVote/", methods=['GET', 'POST'])
 def vote():
     try:
-        poll_name = request.get_json()['poll_name']
+        poll_name = request.get_json(force=True)['poll_name']
     except Exception:
         return {'code': '400', 'msg': 'json must insist poll_name key'}, status.HTTP_400_BAD_REQUEST, HEADER
 
     try:
-        vote_for = request.get_json()['vote_for']
+        vote_for = request.get_json(force=True)['vote_for']
     except Exception:
         return {'code': '400', 'msg': 'json must insist vote_for key'}, status.HTTP_400_BAD_REQUEST, HEADER
 
@@ -78,7 +78,7 @@ def get_active_polls():
 @app.route("/getPollInfo/", methods=['GET', 'POST'])
 def get_info():
     try:
-        poll_name = request.get_json()['poll_name']
+        poll_name = request.get_json(force=True)['poll_name']
     except Exception:
         return {'code': '400', 'msg': 'json must insist poll_name key'}, status.HTTP_400_BAD_REQUEST, HEADER
 
