@@ -120,7 +120,7 @@ footer .copyright {
     margin-bottom: 0;
     text-align: center;
 }
-.progress>div {
+.progress {
 	height: 31px;
 }
 .collapse-btn {
@@ -150,4 +150,8 @@ i {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
 
+}
+
+.col-3 {
+    display: inherit;
 }
