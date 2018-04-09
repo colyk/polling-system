@@ -75,8 +75,8 @@ function createPollOptions(title, option, count, total_sum) {
         col_prog = $('<div class="col"/>'),
         prog_div = $('<div class="progress"/>'),
         prog_bar = $('<div role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-dark">'),
-        vote_btn = $('<button class="btn btn-sm btn-dark"/>').text(option);
-    let percent = ((count * 100.0) / total_sum).toFixed(3);
+        vote_btn = $('<button class="btn btn-sm btn-dark btn-block" data-toggle="tooltip" data-placement="left" title=""/>').text(option);
+    let percent = ((count * 100.0) / total_sum).toFixed(2);
 
     vote_btn.click(() => {
             let data = JSON.stringify({
@@ -85,6 +85,8 @@ function createPollOptions(title, option, count, total_sum) {
             });
             $.post(base_url+'addVote/', data, (data) => {getPollData(title)}, 'json');
         })
+        .attr('title', option)
+        .tooltip()
         .appendTo(col_btn);
 
     prog_bar.attr('aria-valuenow', percent)
@@ -130,7 +132,7 @@ function setPollData(data) {
         for (let opt in data['vote_state']) {
 
             let opt_hash = opt.hashCode(),
-                percent = ((data['vote_state'][opt] * 100.0) / total_sum).toFixed(3),
+                percent = ((data['vote_state'][opt] * 100.0) / total_sum).toFixed(2),
                 progress_elem = $('#'+h+' #'+opt_hash+' .progress-bar');
             progress_elem.css('width', percent+'%')
                          .text(percent+'%');

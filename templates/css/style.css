@@ -155,3 +155,8 @@ i#l {
 .col-3 {
     display: inherit;
 }
+
+.btn {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
