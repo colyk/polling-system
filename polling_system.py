@@ -50,6 +50,8 @@ class PollingSystem(BlockChain):
         result = {
             'polls': []
         }
+        if not os.path.exists(BLOCK_DIRNAME):
+        	return result
         for file in os.listdir(BLOCK_DIRNAME):
             try:
                 result['polls'].append(json.load(open(BLOCK_DIRNAME + "/" + file))['title'])
@@ -85,7 +87,6 @@ class PollingSystem(BlockChain):
             return self.last_block['vote_state']
 
     def zip_poll(self):
-        # Закрытие последний блоком - хеш файла
         old_polls_arch = zipfile.ZipFile(ARCHIVE_PATH, 'a')
         old_polls_arch.write(self.BLOCK_FILENAME)
         old_polls_arch.close()
