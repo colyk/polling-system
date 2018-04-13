@@ -18,6 +18,8 @@ const base_url = 'http://127.0.0.1:5000/'
 function initUI() {
     $('#get-polls-btn').click(getPolls);
     $('#test-crt-btn').click(testAdd);
+    $('#add-option-btn').click(addPollOption);
+    $('#poll-create-btn').click(createPollBtn);
 }
 
 function createPollListItem(title) {
@@ -141,10 +143,81 @@ function setPollData(data) {
     }
 }
 
+function createPollInput() {
+    let inp_grp = $('<div class="input-group mb-3" />'),
+        inp_pre = $('<div class="input-group-prepend" />'),
+        del_btn = $('<button class="btn btn-delete-option" title="Remove option" />'),
+        del_icn = $('<i class="fa fa-times-circle" />'),
+        inp_opt = $('<input type="text" class="form-control modal-poll-option" placeholder="Option text" aria-label="Option field" />');
+    del_btn.append(del_icn)
+           .click(() => {
+                inp_grp.remove();
+           })
+           .appendTo(inp_pre);
 
+    inp_grp.append(inp_pre)
+           .append(inp_opt);
+
+    return inp_grp
+}
+
+function addPollOption() {
+    let inp = createPollInput();
+    $('div.modal-options-list').append(inp);
+}
+
+function createPollBtn() {
+    let inputs = $('.modal-poll-option'),
+        opts = [],
+        t = $('#modal-poll-title'),
+        d = $('#modal-poll-description'),
+        title = '',
+        description = '';
+
+    function checkAndGet(elem) {
+        //console.log(elem);
+        if(elem.val()) {
+            return elem.val();
+        } else {
+            elem.focus();
+            elem.addClass('border-danger');
+            elem.keyup((ev) => {
+                    if(ev.which != 13) $(ev.target).removeClass('border-danger');
+                });
+            return 0;
+        }
+    }
+
+    if (checkAndGet(t)) {
+        title = checkAndGet(t);
+    } else {
+        return 0;
+    }
+
+    if (checkAndGet(d)) {
+        description = checkAndGet(d);
+    } else {
+        return 0;
+    }
+
+    if (inputs.length < 1) {
+        alert('No options provided');
+        return 0;
+    } else {
+        for (let idx = 0; idx < inputs.length; idx++) {
+            if (checkAndGet($(inputs[idx]))) {
+                opts.push(checkAndGet($(inputs[idx])));
+            } else {
+                return 0;
+            }
+        }     
+    }
+
+    console.log(opts);
+    createPoll(title, description, opts);
+}
 
 function createPoll(title, description, options) {
-    //wip
 
     let poll_data = {
             'poll_name': title,

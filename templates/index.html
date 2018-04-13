@@ -51,6 +51,9 @@
                         </h4>
                         <button id="test-crt-btn" class="btn btn-sm">Test Create</button>
                         <button id="get-polls-btn" class="btn btn-sm">Get Polls</button>
+                        <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#create-modal">
+                        Create poll
+                        </button>
                     </div>
                     <div id="polls-panel" class="panel-body">
                         <ul class="list-group">
@@ -60,7 +63,51 @@
             </div>
         </div>
     </div>
+    
 
+    <!-- Modal -->
+    <div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Create new poll</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <input type="text" id="modal-poll-title" class="form-control" placeholder="Sample Text" aria-label="Title" aria-describedby="title-addon">
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="title-addon">Title</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <textarea id="modal-poll-description" class="form-control" aria-label="With textarea"></textarea>
+                        <div class="input-group-append">
+                            <span class="input-group-text">Description</span>
+                        </div>
+                    </div>
+                    <div class="modal-options-list">
+                        <p>Options:</p>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <button class="btn" disabled="disabled">
+                                    <i class="fa fa-times-circle"></i>
+                                </button>
+                            </div>
+                            <input type="text" class="form-control modal-poll-option" placeholder="Option text" aria-label="Option field">
+                        </div>
+                    </div>
+                    <button id="add-option-btn" class="btn btn-success btn-block"><i class="fa fa-plus"></i></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="poll-create-btn" class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>

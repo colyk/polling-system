@@ -42,19 +42,14 @@ body {
     color: #2e3436;
 }
 
-.modal-dialog {
-    padding: 10px;
-    background-color: #414141;
+.modal-options-list {
+    padding-top: 16px;
 }
+
 .form-control {
     background-color: #e8e8e7;
 }
-.modal-body {
-    background-color: #414141;
-}
-.modal-footer {
-    background-color: #414141;
-}
+
 .label-primary {
     background-color: #5c5c5c;
     color: #f0f0f0;
@@ -156,4 +151,12 @@ i#l {
 .btn {
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+textarea.form-control {
+    min-height: 40px;
+}
+
+span.input-group-text {
+    min-width: 115px;
 }
