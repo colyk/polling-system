@@ -19,7 +19,7 @@ class BlockChain():
             os.mkdir(BLOCK_DIRNAME)
 
         self.BLOCK_FILENAME = '%s/%s/%s' % (os.curdir,
-                                            BLOCK_DIRNAME, hashlib.sha224(block_name.encode()).hexdigest() + '.json')
+                                            BLOCK_DIRNAME, self.encrypt_name(block_name))
 
         # TODO: Add voter's id (Fingerprint)
         # https://github.com/Valve/fingerprintjs
@@ -59,6 +59,9 @@ class BlockChain():
         except Exception:
             logging.exception(
                 'An exception occured when tried to get hash %s block' % str(block['index']))
+
+    def encrypt_name(self, block_name):
+        return hashlib.sha224(block_name.encode()).hexdigest() + '.json'
 
     def is_path_exist(self):
         if not os.path.isfile(self.BLOCK_FILENAME):
@@ -120,8 +123,7 @@ class BlockChain():
     def write_block(self):
         with open(self.BLOCK_FILENAME, 'w') as file:
             try:
-                json.dump(self.blocks_frame, file,
-                          indent=4, ensure_ascii=False, sort_keys=True)
+                json.dump(self.blocks_frame, file, ensure_ascii=False, sort_keys=True)
                 logging.info('Created block with index: ' +
                              str(self.blocks_count))
             except Exception:

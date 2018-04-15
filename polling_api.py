@@ -7,8 +7,8 @@ from polling_system import PollingSystem
 app = FlaskAPI(__name__)
 
 
-
 HEADER = {'Access-Control-Allow-Origin': '*'}
+
 
 @app.route("/addVote/", methods=['GET', 'POST'])
 def vote():
@@ -75,7 +75,7 @@ def create_poll():
         return {'code': '500', 'msg': 'poll with poll_name: %s has been created already' % poll_name}, status.HTTP_500_INTERNAL_SERVER_ERROR, HEADER
 
     PollingSystem.add_poll(
-        poll_name=poll_name, description=description, options=options,termination_time=termination_time)
+        poll_name=poll_name, description=description, options=options, termination_time=termination_time)
     return {'code': '201'}, status.HTTP_201_CREATED, HEADER
 
 
@@ -97,6 +97,27 @@ def get_info():
 
     poll = PollingSystem.load_poll(poll_name)
     return poll.get_info(), status.HTTP_200_OK, HEADER
+
+
+@app.route("/zipPoll/", methods=['GET', 'POST'])
+def zip_poll():
+    response = request.get_json(force=True)
+    try:
+        poll_name = response['poll_name']
+    except Exception:
+        return {'code': '400', 'msg': 'json must insist poll_name key'}, status.HTTP_400_BAD_REQUEST, HEADER
+
+    if poll_name not in PollingSystem.get_active_polls()['polls']:
+        return {'code': '500', 'msg': 'poll with poll_name: %s has not been created yet' % poll_name}, status.HTTP_500_INTERNAL_SERVER_ERROR, HEADER
+
+    poll = PollingSystem.load_poll(poll_name)
+    poll.zip_poll()
+    return {'code': '200'}, status.HTTP_200_OK, HEADER
+
+
+@app.route("/getArchivedPolls/", methods=['GET'])
+def get_archived_polls():
+    return {'polls': PollingSystem.get_archived_polls()}, status.HTTP_200_OK, HEADER
 
 
 if __name__ == '__main__':
