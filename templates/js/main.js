@@ -1,5 +1,13 @@
 'use strict'
 
+//  TODO:
+//
+// - ui/handlers/callbacks in different js files;
+// - server response handling;
+// - display termination dates;
+// - pagination;
+// - ???
+
 //Simple string hashing
 //Source: http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
 String.prototype.hashCode = function() {
@@ -13,13 +21,14 @@ String.prototype.hashCode = function() {
   return hash;
 };
 
-const base_url = 'http://127.0.0.1:5000/'
+const base_url = 'http://127.0.0.1:5000/';
 
 function initUI() {
     $('#get-polls-btn').click(getPolls);
     $('#test-crt-btn').click(testAdd);
     $('#add-option-btn').click(addPollOption);
     $('#poll-create-btn').click(createPollBtn);
+    $('#search').keyup(handleSearch);
 }
 
 function createPollListItem(title) {
@@ -27,8 +36,8 @@ function createPollListItem(title) {
 
     let li           = $('<li class="list-group-item" loaded="false" />'),
         c_btn        = $('<button class="btn btn-sm float-right collapse-btn" />'),
-        title_span   = $('<span/>'),
-        c_arrow      = $('<i id="l"class="arrow down" />'),
+        title_span   = $('<span class="badge badge-dark poll-title" />'),
+        c_arrow      = $('<i class="fa fa-angle-down" style="font-weight: 900;"/>'),
         title_head   = $('<div/>'),
         poll_content = $('<div class="container collapse poll-content" />'),
         poll_dsc_div = $('<div class="poll-description" />'),
@@ -36,13 +45,13 @@ function createPollListItem(title) {
         poll_stats   = $('<div class="poll-stats" />');
 
     let pollUpd = () => {
-        if (c_arrow.hasClass('down')) {
-            c_arrow.removeClass('down');
-            c_arrow.addClass('up');
+        if (c_arrow.hasClass('fa-angle-down')) {
+            c_arrow.removeClass('fa-angle-down')
+                   .addClass('fa-angle-up');
             getPollData(title)
         } else {
-            c_arrow.removeClass('up');
-            c_arrow.addClass('down'); 
+            c_arrow.removeClass('fa-angle-up')
+                   .addClass('fa-angle-down'); 
         }
     };
     c_btn.append(c_arrow)
@@ -57,9 +66,8 @@ function createPollListItem(title) {
     title_head.append(title_span)
               .append(c_btn);
 
-    poll_dsc_p.text('No description');
-
-    poll_dsc_div.append(poll_dsc_p);
+    poll_dsc_p.text('No description')
+              .appendTo(poll_dsc_div);
 
     poll_content.append(poll_dsc_div)
                 .append(poll_stats)
@@ -69,6 +77,16 @@ function createPollListItem(title) {
       .append(poll_content);
 
     return li
+}
+
+function handleSearch(event) {
+    let sq = $(event.target);
+    if (sq.val()) {
+        $('.poll-title').parents('li').hide();
+        $('.poll-title:contains(' + sq.val() + ')').parents('li').show();
+    } else {
+        $('.poll-title').parents('li').show();
+    }
 }
 
 function createPollOptions(title, option, count, total_sum) {
@@ -133,7 +151,6 @@ function setPollData(data) {
         elem.attr('loaded', 'true')
     } else {
         for (let opt in data['vote_state']) {
-
             let opt_hash = opt.hashCode(),
                 percent = ((data['vote_state'][opt] * 100.0) / total_sum).toFixed(2),
                 progress_elem = $('#'+h+' #'+opt_hash+' .progress-bar');
@@ -167,15 +184,18 @@ function addPollOption() {
 }
 
 function createPollBtn() {
-    let inputs = $('.modal-poll-option'),
-        opts = [],
-        t = $('#modal-poll-title'),
-        d = $('#modal-poll-description'),
-        title = '',
-        description = '';
+    let inputs      = $('.modal-poll-option'),
+        opts        = [],
+        t           = $('#modal-poll-title'),
+        d           = $('#modal-poll-description'),
+        tm          = $('#end-time'),
+        dt          = $('#end-date'),  
+        title       = '',
+        description = '',
+        time        = '',
+        date        = '';
 
     function checkAndGet(elem) {
-        //console.log(elem);
         if(elem.val()) {
             return elem.val();
         } else {
@@ -187,7 +207,7 @@ function createPollBtn() {
             return 0;
         }
     }
-
+    
     if (checkAndGet(t)) {
         title = checkAndGet(t);
     } else {
@@ -200,11 +220,26 @@ function createPollBtn() {
         return 0;
     }
 
+    if (checkAndGet(tm)) {
+        time = checkAndGet(tm);
+    } else {
+        return 0;
+    }
+
+    if (checkAndGet(dt)) {
+        date = checkAndGet(dt);
+    } else {
+        return 0;
+    }
+
+    let timedate = Date.parse(date + 'T' + time);
+
     if (inputs.length < 1) {
         alert('No options provided');
         return 0;
     } else {
         for (let idx = 0; idx < inputs.length; idx++) {
+            console.log($(inputs[idx]));
             if (checkAndGet($(inputs[idx]))) {
                 opts.push(checkAndGet($(inputs[idx])));
             } else {
@@ -214,15 +249,24 @@ function createPollBtn() {
     }
 
     console.log(opts);
-    createPoll(title, description, opts);
+    createPoll(title, description, timedate, opts);
 }
 
-function createPoll(title, description, options) {
+function resetModalInputs() {
+    $('div.modal-body input').val('');
+    $('div.modal-body textarea').val('');
+    while ($('div.modal-options-list .input-group').length > 1) {
+        $('div.modal-options-list .input-group').last().remove();
+    }
+}
+
+function createPoll(title, description, timedate, options) {
 
     let poll_data = {
             'poll_name': title,
             'description': description,
-            'options': options
+            'options': options,
+            'termination_time': timedate
         },
         str_poll_data = JSON.stringify(poll_data);
 
@@ -230,8 +274,13 @@ function createPoll(title, description, options) {
         url: base_url+'createPoll/', 
         type: 'POST', data: str_poll_data, 
         dataType: 'json', 
-        success: (data) => {console.log(data); getPolls(); /*process errors in response*/}
-    });
+        success: (data) => {
+            console.log(data); 
+            getPolls(); 
+            resetModalInputs();
+            $('#create-modal').click();
+            /*process errors in response*/}
+        });
     console.log(poll_data);
     return poll_data
 }

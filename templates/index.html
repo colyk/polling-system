@@ -47,13 +47,20 @@
             <div class="col-md-8 mx-auto">
                 <div class="panel">
                     <div class="panel-heading">
+                        <div class="row">
                         <h4>Current polls <span id="polls-count" class="badge badge-dark">?</span>
                         </h4>
-                        <button id="test-crt-btn" class="btn btn-sm">Test Create</button>
-                        <button id="get-polls-btn" class="btn btn-sm">Get Polls</button>
-                        <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#create-modal">
-                        Create poll
-                        </button>
+                        </div>
+                        <div class="row">
+                            <div class="col">   
+                                <button id="test-crt-btn" class="btn btn-sm">Test Create</button>
+                                <button id="get-polls-btn" class="btn btn-sm">Get Polls</button>
+                                <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#create-modal">Create poll</button>
+                            </div>
+                            <div class="col">
+                                <input class="form-control" id="search" placeholder="Search in title" type="text"></input>
+                            </div>
+                        </div>
                     </div>
                     <div id="polls-panel" class="panel-body">
                         <ul class="list-group">
@@ -86,6 +93,13 @@
                         <textarea id="modal-poll-description" class="form-control" aria-label="With textarea"></textarea>
                         <div class="input-group-append">
                             <span class="input-group-text">Description</span>
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-top: 15px;">
+                        <input class="form-control" id="end-date" type="date" title="End date">
+                        <input class="form-control" id="end-time" type="time" title="End time">
+                        <div class="input-group-append">
+                            <span class="input-group-text">End time</span>
                         </div>
                     </div>
                     <div class="modal-options-list">
