@@ -11,7 +11,6 @@
     <link href="css/fonts/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
-
     <link rel="stylesheet" href="css/style.css">
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
@@ -19,28 +18,29 @@
 </head>
 
 <body>
-
-       <!-- Navigation -->
+    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="header">
-      <div class="container">
-        <a class="navbar-brand" href="index.html">Active polls</a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          Menu
-          <i class="fa fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Archive polls</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="post.html">Add poll</a>
-            </li>
-          </ul>
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Active polls</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fa fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <input class="form-control" id="search" placeholder="Search in title" type="text" autocomplete="off"></input>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" role="button">Archive polls</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" role="button" data-toggle="modal" data-target="#create-modal">Add poll</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-      </div>
     </nav>
-
     <!-- Page Content -->
     <div class="container" id="content">
         <div class="row">
@@ -48,18 +48,8 @@
                 <div class="panel">
                     <div class="panel-heading">
                         <div class="row">
-                        <h4>Current polls <span id="polls-count" class="badge badge-dark">?</span>
+                            <h4>Created polls <span id="polls-count" class="badge badge-dark">?</span>
                         </h4>
-                        </div>
-                        <div class="row">
-                            <div class="col">   
-                                <button id="test-crt-btn" class="btn btn-sm">Test Create</button>
-                                <button id="get-polls-btn" class="btn btn-sm">Get Polls</button>
-                                <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#create-modal">Create poll</button>
-                            </div>
-                            <div class="col">
-                                <input class="form-control" id="search" placeholder="Search in title" type="text"></input>
-                            </div>
                         </div>
                     </div>
                     <div id="polls-panel" class="panel-body">
@@ -70,8 +60,6 @@
             </div>
         </div>
     </div>
-    
-
     <!-- Modal -->
     <div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -122,7 +110,6 @@
             </div>
         </div>
     </div>
-
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -159,7 +146,6 @@
             </div>
         </div>
     </footer>
-
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js" defer></script>

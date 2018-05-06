@@ -24,6 +24,7 @@ String.prototype.hashCode = function() {
 const base_url = 'http://127.0.0.1:5000/';
 
 function initUI() {
+    $(document).ready(getPolls);
     $('#get-polls-btn').click(getPolls);
     $('#test-crt-btn').click(testAdd);
     $('#add-option-btn').click(addPollOption);
@@ -51,13 +52,13 @@ function createPollListItem(title) {
             getPollData(title)
         } else {
             c_arrow.removeClass('fa-angle-up')
-                   .addClass('fa-angle-down'); 
+                   .addClass('fa-angle-down');
         }
     };
     c_btn.append(c_arrow)
          .click(pollUpd)
          .attr({'data-toggle': 'collapse', 'data-target': '#collapse'+title_hash});
-    
+
     title_span.text(title)
               .attr({'data-toggle': 'collapse', 'data-target': '#collapse'+title_hash})
               .css('cursor', 'pointer')
@@ -133,7 +134,7 @@ function getPollData(title) {
 
 function setPollData(data) {
     console.log(data);
-    let h          = data['title'].hashCode(), 
+    let h          = data['title'].hashCode(),
         descr      = data['description'],
         elem       = $('#'+h),
         stats_elem = $('#'+h+' div.poll-content div.poll-stats'),
@@ -189,7 +190,7 @@ function createPollBtn() {
         t           = $('#modal-poll-title'),
         d           = $('#modal-poll-description'),
         tm          = $('#end-time'),
-        dt          = $('#end-date'),  
+        dt          = $('#end-date'),
         title       = '',
         description = '',
         time        = '',
@@ -207,7 +208,7 @@ function createPollBtn() {
             return 0;
         }
     }
-    
+
     if (checkAndGet(t)) {
         title = checkAndGet(t);
     } else {
@@ -245,7 +246,7 @@ function createPollBtn() {
             } else {
                 return 0;
             }
-        }     
+        }
     }
 
     console.log(opts);
@@ -271,12 +272,12 @@ function createPoll(title, description, timedate, options) {
         str_poll_data = JSON.stringify(poll_data);
 
     $.ajax({
-        url: base_url+'createPoll/', 
-        type: 'POST', data: str_poll_data, 
-        dataType: 'json', 
+        url: base_url+'createPoll/',
+        type: 'POST', data: str_poll_data,
+        dataType: 'json',
         success: (data) => {
-            console.log(data); 
-            getPolls(); 
+            console.log(data);
+            getPolls();
             resetModalInputs();
             $('#create-modal').click();
             /*process errors in response*/}
