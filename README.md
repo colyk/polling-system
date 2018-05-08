@@ -12,7 +12,7 @@ pip install flask
 pip install Flask-API
 
 
-python server.py
+python polling_api.py
 ```
 
 Now head over to http://127.0.0.1:5000/
